@@ -39,6 +39,10 @@
       name="ftw.blueprints.sections.annotate.CheckIsDefaultViewObject"
       />
   <utility
+      component=".creator.SLBlockCreator"
+      name="ftw.blueprints.slblockcreator"
+      />
+  <utility
       component="collective.transmogrifier.sections.tests.PrettyPrinter"
       name="collective.transmogrifier.sections.tests.pprinter"
       />
