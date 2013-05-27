@@ -1,0 +1,45 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier">
+
+  <utility
+      component=".mapper.FieldMapper"
+      name="ftw.blueprints.fieldmapper"
+      />
+  <utility
+      component=".mapper.RegexReplacer"
+      name="ftw.blueprints.regexreplacer"
+      />
+  <utility
+      component=".logger.Logger"
+      name="ftw.blueprints.logger"
+      />
+  <utility
+      component=".workflow.WorkflowMapper"
+      name="ftw.blueprints.workflowmapper"
+      />
+  <utility
+      component=".workflow.WorkflowUpdater"
+      name="ftw.blueprints.workflowupdater"
+      />
+  <utility
+      component=".workflow.ParentWorkflowMapper"
+      name="ftw.blueprints.parentworkflowmapper"
+      />
+  <utility
+      component=".annotate.AnnotateDefaultViewPathObjects"
+      name="ftw.blueprints.sections.annotate.AnnotateDefaultViewPathObjects"
+      />
+  <utility
+      component=".annotate.UpdateDefaultViewObjectPath"
+      name="ftw.blueprints.sections.annotate.UpdateDefaultViewObjectPath"
+      />      
+  <utility
+      component=".annotate.CheckIsDefaultViewObject"
+      name="ftw.blueprints.sections.annotate.CheckIsDefaultViewObject"
+      />
+  <utility
+      component="collective.transmogrifier.sections.tests.PrettyPrinter"
+      name="collective.transmogrifier.sections.tests.pprinter"
+      />
+</configure>
