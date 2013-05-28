@@ -1,14 +1,14 @@
 from Acquisition import aq_inner, aq_parent
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
-from collective.transmogrifier.utils import Condition
-from zope.interface import classProvides, implements
-from collective.transmogrifier.interfaces import ISectionBlueprint
-from collective.transmogrifier.interfaces import ISection
-from collective.transmogrifier.utils import Expression
 from DateTime import DateTime
-from collective.transmogrifier.utils import defaultMatcher
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
+from collective.transmogrifier.interfaces import ISection
+from collective.transmogrifier.interfaces import ISectionBlueprint
+from collective.transmogrifier.utils import Condition
+from collective.transmogrifier.utils import Expression
+from collective.transmogrifier.utils import defaultMatcher
+from zope.interface import classProvides, implements
 
 
 class ParentWorkflowMapper(object):
@@ -34,7 +34,8 @@ class ParentWorkflowMapper(object):
                     str(path).lstrip('/'), None)
 
                 if parent is None:
-                    yield item; continue
+                    yield item
+                    continue
 
                 while not IPloneSiteRoot.providedBy(parent):
                     if len(self.wftool.getWorkflowsFor(parent)):
@@ -68,25 +69,28 @@ class WorkflowUpdater(object):
             pathkey = self.pathkey(*keys)[0]
             statekey = self.statekey(*keys)[0]
 
-            if not (pathkey and statekey): # not enough info
-                yield item; continue
+            if not (pathkey and statekey):  # not enough info
+                yield item
+                continue
 
             path, state = item[pathkey], item[statekey]
 
             obj = self.context.unrestrictedTraverse(path.lstrip('/'), None)
             if obj is None:                      # path doesn't exist
-                yield item; continue
+                yield item
+                continue
 
             try:
                 wf_ids = self.wftool.getChainFor(obj)
                 if wf_ids:
                     wf_id = wf_ids[0]
                     comment = 'Set dossier state upon import.'
-                    self.wftool.setStatusOf(wf_id, obj, {'review_state': state,
-                                                            'action' : state,
-                                                            'actor': current_user_id,
-                                                            'time': DateTime(),
-                                                            'comments': comment,})
+                    self.wftool.setStatusOf(wf_id, obj, {
+                            'review_state': state,
+                            'action': state,
+                            'actor': current_user_id,
+                            'time': DateTime(),
+                            'comments': comment})
 
                     wfs = {wf_id: self.wftool.getWorkflowById(wf_id)}
                     self.wftool._recursiveUpdateRoleMappings(obj, wfs)

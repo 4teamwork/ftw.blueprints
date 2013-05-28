@@ -1,35 +1,16 @@
-*.py[cod]
-
-# C extensions
-*.so
-
-# Packages
-*.egg
 *.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
-
-# Installer logs
-pip-log.txt
-
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
-
-# Translations
 *.mo
-
-# Mr Developer
+*.pyc
+.installed.cfg
 .mr.developer.cfg
-.project
-.pydevproject
+README.html
+bin/
+build/
+buildout.cfg
+coverage/
+develop-eggs/
+dist/
+eggs/
+parts/
+src/
+var/

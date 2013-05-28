@@ -9,7 +9,7 @@ import os
 class AdditionalObjectInserter(object):
     classProvides(ISectionBlueprint)
     implements(ISection)
-    
+
     insert_as_parent = False
 
     def __init__(self, transmogrifier, name, options, previous):
@@ -31,9 +31,9 @@ class AdditionalObjectInserter(object):
             if not self.condition(item):
                 yield item
                 continue
-            
+
             additional_item = self.create_additional_item(item)
-            
+
             if self.insert_as_parent:
                 parent, child = additional_item, item
                 self.rename_item(parent, self.additional_id)
@@ -45,17 +45,17 @@ class AdditionalObjectInserter(object):
 
             yield parent
             yield child
-            
+
     def rename_item(self, item, new_id):
         item['_path'] = os.path.join(os.path.dirname(item['_path']), new_id)
 
     def move_item_into_container(self, item, container):
         item_id = os.path.basename(item['_path'])
         item['_path'] = os.path.join(container['_path'], item_id)
-            
+
     def create_additional_item(self, item):
         additional_item = item.copy()
-        
+
         additional_item.update({
                 '_type': self.content_type,
                 '_interfaces': self.interfaces(item),
@@ -66,7 +66,7 @@ class AdditionalObjectInserter(object):
         self.extend_metadata(item, additional_item, self.metadata(item))
 
         return additional_item
-    
+
     def extend_metadata(self, item, additional_item, metadata):
         """
         Extends the new item with additinoal metadata
