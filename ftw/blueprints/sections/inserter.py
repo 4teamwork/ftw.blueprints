@@ -14,16 +14,16 @@ class AdditionalObjectInserter(object):
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.condition = Condition(
-            options.get('condition'), transmogrifier, name, options)
+        self.condition = Condition(options.get('condition', 'python:True'),
+            transmogrifier, name, options)
         self.content_type = options.get('content-type')
         self.additional_id = options.get('additional-id')
         self.interfaces = Expression(
-            options['_interfaces'], transmogrifier, name, options)
+            options.get('_interfaces', 'python:[]'), transmogrifier, name, options)
         self.annotations = Expression(
-            options['_annotations'], transmogrifier, name, options)
+            options.get('_annotations', 'python:{}'), transmogrifier, name, options)
         self.metadata = Expression(
-            options['metadata-key'], transmogrifier, name, options)
+            options.get('metadata-key', 'python:{}'), transmogrifier, name, options)
 
     def __iter__(self):
         for item in self.previous:
