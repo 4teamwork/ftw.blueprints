@@ -4,6 +4,15 @@ import os
 version = open('ftw/blueprints/version.txt').read().strip()
 maintainer = 'Elio Schmutz'
 
+tests_require = [
+    'unittest2',
+    'ftw.testing',
+    'zope.configuration',
+    'plone.testing',
+    'plone.app.testing',
+    ]
+
+
 setup(name='ftw.blueprints',
       version=version,
       description="Package ftw.blueprints (Maintainer: %s)" % maintainer,
@@ -34,6 +43,10 @@ setup(name='ftw.blueprints',
           'ftw.inflator'
           # -*- Extra requirements: -*-
       ],
+      
+      tests_require=tests_require,
+      extras_require={'tests': tests_require},
+      
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]
