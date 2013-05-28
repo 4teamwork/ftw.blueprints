@@ -54,14 +54,14 @@ class AdditionalObjectInserter(object):
         item['_path'] = os.path.join(container['_path'], item_id)
 
     def create_additional_item(self, item):
-        additional_item = item.copy()
 
-        additional_item.update({
+        additional_item = {
                 '_type': self.content_type,
                 '_interfaces': self.interfaces(item),
                 '_annotations': self.annotations(item),
-                '_id': self.additional_id
-                })
+                '_id': self.additional_id,
+                '_path': item['_path']
+                }
 
         self.extend_metadata(item, additional_item, self.metadata(item))
 
