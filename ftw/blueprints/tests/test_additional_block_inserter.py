@@ -189,7 +189,7 @@ def get_options(name):
     base_options = {
             'condition': 'python:True',
             'content-type': 'Page',
-            'additional_id': 'item',
+            'additional-id': 'item',
             '_interfaces': 'python:[]',
             '_annotations': 'python:{}',
             'metadata-key': 'python:{}'}

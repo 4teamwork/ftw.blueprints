@@ -17,7 +17,7 @@ class AdditionalObjectInserter(object):
         self.condition = Condition(
             options.get('condition'), transmogrifier, name, options)
         self.content_type = options.get('content-type')
-        self.additional_id = options.get('additional_id')
+        self.additional_id = options.get('additional-id')
         self.interfaces = Expression(
             options['_interfaces'], transmogrifier, name, options)
         self.annotations = Expression(
