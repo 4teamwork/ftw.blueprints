@@ -39,8 +39,12 @@
       name="ftw.blueprints.sections.annotate.CheckIsDefaultViewObject"
       />
   <utility
-      component=".creator.SLBlockCreator"
-      name="ftw.blueprints.slblockcreator"
+      component=".inserter.ChildInserter"
+      name="ftw.blueprints.childinserter"
+      />
+  <utility
+      component=".inserter.ParentInserter"
+      name="ftw.blueprints.parentinserter"
       />
   <utility
       component="collective.transmogrifier.sections.tests.PrettyPrinter"
