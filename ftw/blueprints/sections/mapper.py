@@ -10,8 +10,7 @@ class RegexReplacer(object):
     classProvides(ISectionBlueprint)
     implements(ISection)
 
-    """
-    Replaces strings with regex:
+    """Replaces strings with regex:
 
     [insert-table-class]
     blueprint = ftw.blueprints.regexreplacer
@@ -45,8 +44,7 @@ class FieldMapper(object):
     implements(ISection)
 
     def __init__(self, transmogrifier, name, options, previous):
-        """
-        The FieldMapper Blueprint provides basic functionality to map and
+        """The FieldMapper Blueprint provides basic functionality to map and
         modify values on the given item.
 
         - First, you need to define the source-id you want to modifiy.

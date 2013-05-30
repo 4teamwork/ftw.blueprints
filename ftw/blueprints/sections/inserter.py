@@ -68,8 +68,7 @@ class AdditionalObjectInserter(object):
         return additional_item
 
     def extend_metadata(self, item, additional_item, metadata):
-        """
-        Extends the new item with additinoal metadata
+        """Extends the new item with additinoal metadata
         """
 
         for key, value_key in metadata.items():
@@ -85,16 +84,14 @@ class AdditionalObjectInserter(object):
 
 
 class ChildInserter(AdditionalObjectInserter):
-    """
-    Inserts a new item into the transmogrifier pipeline as a child
+    """Inserts a new item into the transmogrifier pipeline as a child
     """
     classProvides(ISectionBlueprint)
     implements(ISection)
 
 
 class ParentInserter(AdditionalObjectInserter):
-    """
-    Inserts a new item into the transmogrifier pipeline as a parent
+    """Inserts a new item into the transmogrifier pipeline as a parent
     """
     classProvides(ISectionBlueprint)
     implements(ISection)
