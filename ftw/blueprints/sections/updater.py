@@ -1,5 +1,6 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
+from collective.transmogrifier.utils import Condition
 from zope.interface import classProvides, implements
 import base64
 import logging
@@ -19,9 +20,15 @@ class DataUpdater(object):
         self.logger = logging.getLogger(options['blueprint'])
         self.data_field = options.get('data-field')
         self.schema_field = options.get('schema-field')
+        self.condition = Condition(options.get('condition', 'python:True'),
+            transmogrifier, name, options)
 
     def __iter__(self):
         for item in self.previous:
+
+            if not self.condition(item):
+                yield item
+                continue
 
             file_obj = self.context.unrestrictedTraverse(
                             str(item['_path']).lstrip('/'), None)
@@ -31,7 +38,7 @@ class DataUpdater(object):
 
                 yield item
                 continue;
-
+            
             field = file_obj.Schema()[self.schema_field]
             value = item.get(self.data_field, {})
 
