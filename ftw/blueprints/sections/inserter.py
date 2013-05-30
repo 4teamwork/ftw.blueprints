@@ -13,7 +13,8 @@ class ObjectInserter(object):
         self.condition = Condition(options.get('condition', 'python:True'),
             transmogrifier, name, options)
         self.content_type = options.get('content-type')
-        self.additional_id = options.get('additional-id')
+        self.additional_id = Expression(
+            options.get('additional-id'), transmogrifier, name, options)
         self.interfaces = Expression(
             options.get('_interfaces', 'python:[]'), transmogrifier, name, options)
         self.annotations = Expression(
@@ -36,7 +37,7 @@ class ObjectInserter(object):
         return self.create_additional_item(
             item,
             self.path(item),
-            self.additional_id,
+            self.additional_id(item),
             self.content_type,
             self.interfaces(item),
             self.annotations(item))
@@ -87,10 +88,10 @@ class AcquisitionInserter(ObjectInserter):
 
             if self.insert_as_parent:
                 parent, child = additional_item, item
-                self.rename_item(parent, self.additional_id)
+                self.rename_item(parent, additional_item['_id'])
             else:
                 parent, child = item, additional_item
-                self.rename_item(child, self.additional_id)
+                self.rename_item(child, additional_item['_id'])
 
             self.move_item_into_container(child, parent)
 
@@ -101,7 +102,7 @@ class AcquisitionInserter(ObjectInserter):
         return self.create_additional_item(
             item,
             item['_path'],
-            self.additional_id,
+            self.additional_id(item),
             self.content_type,
             self.interfaces(item),
             self.annotations(item))

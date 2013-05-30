@@ -27,7 +27,7 @@ class ObjectInserter(TestCase):
         
         options = {
             'content-type': 'Page',
-            'additional-id': 'item',
+            'additional-id': 'string:item',
             'new-path':'python:"/foo/given/path"'
             }
 
@@ -213,7 +213,7 @@ def get_options(name):
 
     base_options = {
             'content-type': 'Page',
-            'additional-id': 'item',
+            'additional-id': 'string:item',
         }
 
     if name is 'default':
