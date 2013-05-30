@@ -6,6 +6,12 @@ from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 
 
+INPUT = {
+    '_path': '/foo/bar',
+    '_type': 'Folder',
+    '_id': 'bar',
+    }
+    
 class TestChildInserter(TestCase):
 
     def setUp(self):
@@ -15,9 +21,9 @@ class TestChildInserter(TestCase):
         check_implements_on_class(self, self.klass, ISection)
         check_provides_on_class(self, self.klass, ISectionBlueprint)
 
-    def test_default(self):
+    def test_blueprint_with_default_settings(self):
         expected = [
-            self.get_expected_output(),
+            INPUT,
             {'_interfaces': [],
              '_type': 'Page',
              '_path': '/foo/bar/item',
@@ -25,18 +31,18 @@ class TestChildInserter(TestCase):
              '_annotations': {}},
         ]
 
-        check_result(self, self.klass, 'default', expected)
+        assert_result(self, self.klass, get_options('default'), expected)
 
-    def test_condition(self):
+    def test_blueprint_with_condition_false(self):
         expected = [
-            self.get_expected_output(),
+            INPUT,
         ]
 
-        check_result(self, self.klass, 'condition_false', expected)
+        assert_result(self, self.klass, get_options('condition_false'), expected)
 
-    def test_interfaces(self):
+    def test_blueprint_with_additional_interfaces(self):
         expected = [
-            self.get_expected_output(),
+            INPUT,
             {'_interfaces': ["ITest1", "ITest2"],
              '_type': 'Page',
              '_path': '/foo/bar/item',
@@ -44,11 +50,11 @@ class TestChildInserter(TestCase):
              '_annotations': {}},
         ]
 
-        check_result(self, self.klass, 'with_interfaces', expected)
+        assert_result(self, self.klass, get_options('with_interfaces'), expected)
 
-    def test_annotations(self):
+    def test_blueprint_with_additional_annotations(self):
         expected = [
-            self.get_expected_output(),
+            INPUT,
             {'_interfaces': [],
              '_type': 'Page',
              '_path': '/foo/bar/item',
@@ -56,11 +62,12 @@ class TestChildInserter(TestCase):
              '_annotations': {"viewname": "portlet"}},
         ]
 
-        check_result(self, self.klass, 'with_annotations', expected)
+        assert_result(
+            self, self.klass, get_options('with_annotations'), expected)
 
-    def test_metadata(self):
+    def test_blueprint_with_additional_metadata(self):
         expected = [
-            self.get_expected_output(),
+            INPUT,
             {'_interfaces': [],
              '_type': 'Page',
              '_path': '/foo/bar/item',
@@ -69,11 +76,7 @@ class TestChildInserter(TestCase):
              'title': 'bar'},
         ]
 
-        check_result(self, self.klass, 'with_metadata', expected)
-
-    def get_expected_output(self):
-
-        return get_input()
+        assert_result(self, self.klass, get_options('with_metadata'), expected)
 
 
 class TestParentInserter(TestCase):
@@ -86,38 +89,38 @@ class TestParentInserter(TestCase):
         check_implements_on_class(self, self.klass, ISection)
         check_provides_on_class(self, self.klass, ISectionBlueprint)
 
-    def test_default(self):
+    def test_blueprint_with_default_settings(self):
         expected = [
             {'_interfaces': [],
-             '_type': 'Page',
              '_path': '/foo/item',
+             '_type': 'Page',     
              '_id': 'item',
              '_annotations': {}},
             self.get_expected_output(),
         ]
 
-        check_result(self, self.klass, 'default', expected)
+        assert_result(self, self.klass, get_options('default'), expected)
 
-    def test_condition(self):
+    def test_blueprint_with_condition_false(self):
         expected = [
-            get_input(),
+            INPUT,
         ]
 
-        check_result(self, self.klass, 'condition_false', expected)
+        assert_result(self, self.klass, get_options('condition_false'), expected)
 
-    def test_interfaces(self):
+    def test_blueprint_with_additional_interfaces(self):
         expected = [
             {'_interfaces': ["ITest1", "ITest2"],
-             '_type': 'Page',
              '_path': '/foo/item',
+             '_type': 'Page',
              '_id': 'item',
              '_annotations': {}},
             self.get_expected_output(),
         ]
 
-        check_result(self, self.klass, 'with_interfaces', expected)
+        assert_result(self, self.klass, get_options('with_interfaces'), expected)
 
-    def test_annotations(self):
+    def test_blueprint_with_additional_annotations(self):
         expected = [
             {'_interfaces': [],
              '_type': 'Page',
@@ -127,9 +130,10 @@ class TestParentInserter(TestCase):
             self.get_expected_output(),
         ]
 
-        check_result(self, self.klass, 'with_annotations', expected)
+        assert_result(
+            self, self.klass, get_options('with_annotations'), expected)
 
-    def test_metadata(self):
+    def test_blueprint_with_additional_metadata(self):
         expected = [
             {'_interfaces': [],
              '_type': 'Page',
@@ -140,11 +144,10 @@ class TestParentInserter(TestCase):
             self.get_expected_output(),
         ]
 
-        check_result(self, self.klass, 'with_metadata', expected)
+        assert_result(self, self.klass, get_options('with_metadata'), expected)
 
     def get_expected_output(self):
-
-        input_ = get_input()
+        input_ = INPUT.copy()
         input_['_path'] = '/foo/item/bar'
         return input_
 
@@ -167,32 +170,21 @@ def check_provides_on_class(context, klass, interface):
     verifyObject(interface, klass)
 
 
-def check_result(context, inserter, options_name, expected):
+def assert_result(context, inserter, options, expected):
 
-    source = inserter(None, 'test', get_options(options_name), [get_input()])
+    source = inserter(None, 'test', options, [INPUT.copy()])
     output = list(source)
 
     context.maxDiff = None
     context.assertEqual(output, expected)
 
 
-def get_input():
-
-    return {
-        '_path': '/foo/bar',
-        '_type': 'Folder',
-        '_id': 'bar'}
-
-
 def get_options(name):
 
     base_options = {
-            'condition': 'python:True',
             'content-type': 'Page',
             'additional-id': 'item',
-            '_interfaces': 'python:[]',
-            '_annotations': 'python:{}',
-            'metadata-key': 'python:{}'}
+        }
 
     if name is 'default':
         return base_options
