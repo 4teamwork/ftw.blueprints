@@ -47,6 +47,10 @@
       name="ftw.blueprints.parentinserter"
       />
   <utility
+      component=".inserter.AdditionalObjectInserter"
+      name="ftw.blueprints.additionalobjectinserter"
+      />
+  <utility
       component=".updater.DataUpdater"
       name="ftw.blueprints.dataupdater"
       />

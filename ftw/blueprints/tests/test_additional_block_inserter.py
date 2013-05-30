@@ -12,6 +12,35 @@ INPUT = {
     '_id': 'bar',
     'title': 'test',
     }
+
+
+class ObjectInserter(TestCase):
+
+    def setUp(self):
+        self.klass = inserter.AdditionalObjectInserter
+
+    def test_implements_interface(self):
+        check_implements_on_class(self, self.klass, ISection)
+        check_provides_on_class(self, self.klass, ISectionBlueprint)
+
+    def test_insert_object_at_a_given_path(self):
+        
+        options = {
+            'content-type': 'Page',
+            'additional-id': 'item',
+            'new-path':'python:"/foo/given/path"'
+            }
+
+        expected = [
+            {'_interfaces': [],
+             '_type': 'Page',
+             '_path': '/foo/given/path',
+             '_id': 'item',
+             '_annotations': {}},
+             INPUT,
+        ]
+
+        assert_result(self, self.klass, options, expected)
     
 class TestChildInserter(TestCase):
 
