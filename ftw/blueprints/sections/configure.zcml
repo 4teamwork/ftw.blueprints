@@ -47,6 +47,10 @@
       name="ftw.blueprints.parentinserter"
       />
   <utility
+      component=".updater.DataUpdater"
+      name="ftw.blueprints.dataupdater"
+      />
+  <utility
       component="collective.transmogrifier.sections.tests.PrettyPrinter"
       name="collective.transmogrifier.sections.tests.pprinter"
       />
