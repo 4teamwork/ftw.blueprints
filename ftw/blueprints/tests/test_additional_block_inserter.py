@@ -10,6 +10,7 @@ INPUT = {
     '_path': '/foo/bar',
     '_type': 'Folder',
     '_id': 'bar',
+    'title': 'test',
     }
     
 class TestChildInserter(TestCase):
