@@ -28,15 +28,15 @@
       />
   <utility
       component=".annotate.AnnotateDefaultViewPathObjects"
-      name="ftw.blueprints.sections.annotate.AnnotateDefaultViewPathObjects"
+      name="ftw.blueprints.annotatedefaultviewpathobjects"
       />
   <utility
       component=".annotate.UpdateDefaultViewObjectPath"
-      name="ftw.blueprints.sections.annotate.UpdateDefaultViewObjectPath"
+      name="ftw.blueprints.updatedefaultviewobjectpath"
       />      
   <utility
       component=".annotate.CheckIsDefaultViewObject"
-      name="ftw.blueprints.sections.annotate.CheckIsDefaultViewObject"
+      name="ftw.blueprints.checkisdefaultviewobject"
       />
   <utility
       component=".inserter.ChildInserter"
