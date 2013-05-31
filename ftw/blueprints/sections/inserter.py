@@ -7,7 +7,8 @@ import os
 
 
 class ObjectInserter(object):
-
+    """Baseclass to add an item to the transmogrifier pipeline.
+    """
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
         self.condition = Condition(options.get('condition', 'python:True'),
@@ -74,7 +75,9 @@ class ObjectInserter(object):
 
 
 class AcquisitionInserter(ObjectInserter):
-
+    """Baseclass to add an item to the transmogrifier pipeline as parent or
+    child.
+    """
     insert_as_parent = False
     
     def __iter__(self):
@@ -116,14 +119,14 @@ class AcquisitionInserter(ObjectInserter):
     
     
 class ChildInserter(AcquisitionInserter):
-    """Inserts a new item into the transmogrifier pipeline as a child
+    """Inserts a new item to the transmogrifier pipeline as a child
     """
     classProvides(ISectionBlueprint)
     implements(ISection)
 
 
 class ParentInserter(AcquisitionInserter):
-    """Inserts a new item into the transmogrifier pipeline as a parent
+    """Inserts a new item to the transmogrifier pipeline as a parent
     """
     classProvides(ISectionBlueprint)
     implements(ISection)
@@ -132,7 +135,7 @@ class ParentInserter(AcquisitionInserter):
     
 
 class AdditionalObjectInserter(ObjectInserter):
-    """Inserts a new item into the transmogrifier pipeline on a variable path
+    """Inserts a new item to the transmogrifier pipeline on a variable path
     """
     classProvides(ISectionBlueprint)
     implements(ISection)
