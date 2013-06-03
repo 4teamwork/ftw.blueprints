@@ -51,7 +51,6 @@ class FieldMapper(object):
             options['field-mapping'], transmogrifier, name, options)
 
         self.previous = previous
-        self.context = transmogrifier.context
 
     def __iter__(self):
         for item in self.previous:
