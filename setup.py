@@ -2,7 +2,6 @@ from setuptools import setup, find_packages
 import os
 
 version = '1.0.dev0'
-maintainer = 'Elio Schmutz'
 
 tests_require = [
     'unittest2',
@@ -40,14 +39,15 @@ setup(name='ftw.blueprints',
       install_requires=[
           'setuptools',
           'collective.jsonmigrator',
+          'collective.transmogrifier',
           'collective.blueprint.translationlinker',
-          'ftw.inflator'
+          'ftw.inflator',
           # -*- Extra requirements: -*-
       ],
-      
+
       tests_require=tests_require,
       extras_require={'tests': tests_require},
-      
+
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]

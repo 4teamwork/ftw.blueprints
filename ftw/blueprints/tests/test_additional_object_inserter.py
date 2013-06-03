@@ -24,7 +24,7 @@ class ObjectInserter(TestCase):
         check_provides_on_class(self, self.klass, ISectionBlueprint)
 
     def test_insert_object_at_a_given_path(self):
-        
+
         options = {
             'content-type': 'Page',
             'additional-id': 'string:item',
@@ -41,7 +41,7 @@ class ObjectInserter(TestCase):
         ]
 
         assert_result(self, self.klass, options, expected)
-    
+
 class TestChildInserter(TestCase):
 
     def setUp(self):
@@ -61,14 +61,15 @@ class TestChildInserter(TestCase):
              '_annotations': {}},
         ]
 
-        assert_result(self, self.klass, get_options('default'), expected)
+        assert_result(self, self.klass, get_options(), expected)
 
     def test_blueprint_with_condition_false(self):
         expected = [
             INPUT,
         ]
 
-        assert_result(self, self.klass, get_options('condition_false'), expected)
+        assert_result(self, self.klass, get_options(
+            condition='python:False'), expected)
 
     def test_blueprint_with_additional_interfaces(self):
         expected = [
@@ -80,7 +81,8 @@ class TestChildInserter(TestCase):
              '_annotations': {}},
         ]
 
-        assert_result(self, self.klass, get_options('with_interfaces'), expected)
+        assert_result(self, self.klass, get_options(
+            interfaces='python:["ITest1", "ITest2"]'), expected)
 
     def test_blueprint_with_additional_annotations(self):
         expected = [
@@ -92,8 +94,8 @@ class TestChildInserter(TestCase):
              '_annotations': {"viewname": "portlet"}},
         ]
 
-        assert_result(
-            self, self.klass, get_options('with_annotations'), expected)
+        assert_result(self, self.klass, get_options(
+                annotations='python:{"viewname": "portlet"}'), expected)
 
     def test_blueprint_with_additional_metadata(self):
         expected = [
@@ -106,7 +108,8 @@ class TestChildInserter(TestCase):
              'title': 'bar'},
         ]
 
-        assert_result(self, self.klass, get_options('with_metadata'), expected)
+        assert_result(self, self.klass, get_options(
+            metadata='python:{"title": lambda item: item["_id"]}'), expected)
 
 
 class TestParentInserter(TestCase):
@@ -123,20 +126,21 @@ class TestParentInserter(TestCase):
         expected = [
             {'_interfaces': [],
              '_path': '/foo/item',
-             '_type': 'Page',     
+             '_type': 'Page',
              '_id': 'item',
              '_annotations': {}},
             self.get_expected_output(),
         ]
 
-        assert_result(self, self.klass, get_options('default'), expected)
+        assert_result(self, self.klass, get_options(), expected)
 
     def test_blueprint_with_condition_false(self):
         expected = [
             INPUT,
         ]
 
-        assert_result(self, self.klass, get_options('condition_false'), expected)
+        assert_result(self, self.klass, get_options(
+            condition='python:False'), expected)
 
     def test_blueprint_with_additional_interfaces(self):
         expected = [
@@ -148,7 +152,8 @@ class TestParentInserter(TestCase):
             self.get_expected_output(),
         ]
 
-        assert_result(self, self.klass, get_options('with_interfaces'), expected)
+        assert_result(self, self.klass, get_options(
+            interfaces='python:["ITest1", "ITest2"]'), expected)
 
     def test_blueprint_with_additional_annotations(self):
         expected = [
@@ -160,8 +165,8 @@ class TestParentInserter(TestCase):
             self.get_expected_output(),
         ]
 
-        assert_result(
-            self, self.klass, get_options('with_annotations'), expected)
+        assert_result(self, self.klass, get_options(
+                annotations='python:{"viewname": "portlet"}'), expected)
 
     def test_blueprint_with_additional_metadata(self):
         expected = [
@@ -174,7 +179,8 @@ class TestParentInserter(TestCase):
             self.get_expected_output(),
         ]
 
-        assert_result(self, self.klass, get_options('with_metadata'), expected)
+        assert_result(self, self.klass, get_options(
+            metadata='python:{"title": lambda item: item["_id"]}'), expected)
 
     def get_expected_output(self):
         input_ = INPUT.copy()
@@ -209,31 +215,29 @@ def assert_result(context, inserter, options, expected):
     context.assertEqual(output, expected)
 
 
-def get_options(name):
+def get_options(
+    content_type="Page",
+    additional_id="string:item",
+    condition=None,
+    interfaces=None,
+    annotations=None,
+    metadata=None):
 
-    base_options = {
-            'content-type': 'Page',
-            'additional-id': 'string:item',
+    options = {
+        'content-type': content_type,
+        'additional-id': additional_id,
         }
 
-    if name is 'default':
-        return base_options
+    if condition:
+        options.update({'condition': condition})
 
-    elif name is 'condition_false':
-        base_options.update({'condition': 'python:False'})
-        return base_options
+    if interfaces:
+        options.update({'_interfaces': interfaces})
 
-    elif name is 'with_interfaces':
-        base_options.update(
-            {'_interfaces': 'python:["ITest1", "ITest2"]'})
-        return base_options
+    if annotations:
+        options.update({'_annotations': annotations})
 
-    elif name is 'with_annotations':
-        base_options.update(
-            {'_annotations': 'python:{"viewname": "portlet"}'})
-        return base_options
+    if metadata:
+        options.update({'metadata-key': metadata})
 
-    elif name is 'with_metadata':
-        base_options.update(
-            {'metadata-key': 'python:{"title": lambda item: item["_id"]}'})
-        return base_options
+    return options

@@ -55,8 +55,8 @@ Blueprints provided by this package
     - Replaces values with regex
 
 - ftw.blueprints.logger
-    - Alternate to the printer blueprint. It just logging some useful
-      informations about the item in the pipeline and not the whole item.
+    - Alternate to the printer blueprint. Configurable logging blueprint to
+    log the information given in an expression.
 
 - ftw.blueprints.workflowmapper
     - Map your old workflows with new ones.
@@ -83,44 +83,44 @@ Required options:
   - option to map or change fields
 
 Using field-mapping:
-  
+
   {'source-key': {option: value}}
 
 - First, you need to define the source-key you want to modifiy.
 - Then you need to define some options:
 
   - destination: the new name of the key.
-  
+
     {'plz': {'destination':'zip'}
-      
+
     Just moves the value of plz to zip
 
   - static_value: if you want to use a static value, you can use this
     option:
-    
+
     {'plz': {'static_value':'3000'}}
-    
+
     Replaces the value in plz with 3000
 
   - map_value: in some cases you want to change the values with a map:
-  
+
     {'plz': {'map_value':{'PLZ 3000': '3000'}}}
-    
+
     Tf the value of plz is PLZ 3000, it will be replaced with 3000
 
   - transform: transforms the value with the given function.
     As parameter, you have the item itself.
-    
+
     {'plz': {'transform':lambda x: x['plz'] = x['plz'] and \
         x['plz'] or '3000'}}
-        
+
     This example would replace the plz with 3000 if its value is None
 
   - need_src_key: in some cases you just want to do transforms if the
     source-key is available.
-    
+
     {'plz': 'static_value':'3000', need_src_key: True}
-    
+
     It would just set the static value if the source-key exists on the item.
 
 The option 'need_src_val' is per default on False. So you can use the
@@ -138,7 +138,7 @@ exist on the item, it will be ignored by the mapper.
 
     This example would set the non existing yet 'showTitle' attribute
     on the item to True if the items title is not None.
-    
+
 Its also possible to do transforms on an attribute, after you can map it
 with the map_value option.
 
@@ -148,7 +148,7 @@ with the map_value option.
         'map_value': {'james': 'bond', 'bud': 'spencer'}
         }
     }
-    
+
     First it transforms the title to lowercase. If the title contains one
     of the given keys in the map_value option it will be replaced.
     At the end, it put the transformed and mapped value into the description.
@@ -196,11 +196,13 @@ Required options:
 
 - content-type
   - defines the contenttype of the child object
+  - string
 
 - additional-id
   - defines the new id of the child object
+  - expression, string
 
-Minimal configuration:
+-Minimal configuration:
 
 .. code:: cfg
 
@@ -209,13 +211,13 @@ Minimal configuration:
     content-type = ContentPage
     additional-id = python: 'downloads'
 
-
 Optional options:
 
 - metadata-key
   - metadatamapping for the child as a dict.
   you can provide metadata from the parent item for the child or you can
   use lambda expressions to set a new value.
+  - expression, dict
 
   Using parents metadata:
 
@@ -232,9 +234,11 @@ Optional options:
 
 - _interfaces
   - adds interfaces as a list to the child-item
+  - expression, list
 
 - _annotations
   - adds annotations as a dict to the child-item
+  - expression, sict
 
 Full configuration
 
@@ -357,12 +361,15 @@ Required options:
 
 - new-path
   - the path including the id of the object you want create
+  - expression, string
 
 - content-type
   - defines the contenttype of the new object
+  - string
 
 - additional-id
   - defines the new id of the new object
+  -expression, string
 
 Minimal configuration:
 

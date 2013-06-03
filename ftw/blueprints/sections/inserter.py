@@ -13,6 +13,13 @@ class ObjectInserter(object):
         self.previous = previous
         self.condition = Condition(options.get('condition', 'python:True'),
             transmogrifier, name, options)
+
+        self.path_key = options.get('path-key', '_path')
+        self.contenttype_key = options.get('contenttype-key', '_type')
+        self.id_key = options.get('id-key', '_id')
+        self.interfaces_key = options.get('interfaces-key', '_interfaces')
+        self.annotations_key = options.get('annotations-key', '_annotations')
+
         self.content_type = options.get('content-type')
         self.additional_id = Expression(
             options.get('additional-id'), transmogrifier, name, options)
@@ -30,7 +37,7 @@ class ObjectInserter(object):
             if not self.condition(item):
                 yield item
                 continue
-            
+
             yield self.get_additional_item(item)
             yield item
 
@@ -42,16 +49,16 @@ class ObjectInserter(object):
             self.content_type,
             self.interfaces(item),
             self.annotations(item))
-        
+
     def create_additional_item(
         self, item, path, additional_id, content_type, interfaces, annotations):
 
         additional_item = {
-                '_type': content_type,
-                '_interfaces': interfaces,
-                '_annotations': annotations,
-                '_id': additional_id,
-                '_path': path,
+                self.contenttype_key: content_type,
+                self.interfaces_key: interfaces,
+                self.annotations_key: annotations,
+                self.id_key: additional_id,
+                self.path_key: path,
                 }
 
         self.extend_metadata(item, additional_item, self.metadata(item))
@@ -79,7 +86,7 @@ class AcquisitionInserter(ObjectInserter):
     child.
     """
     insert_as_parent = False
-    
+
     def __iter__(self):
         for item in self.previous:
 
@@ -91,33 +98,34 @@ class AcquisitionInserter(ObjectInserter):
 
             if self.insert_as_parent:
                 parent, child = additional_item, item
-                self.rename_item(parent, additional_item['_id'])
+                self.rename_item(parent, additional_item[self.id_key])
             else:
                 parent, child = item, additional_item
-                self.rename_item(child, additional_item['_id'])
+                self.rename_item(child, additional_item[self.id_key])
 
             self.move_item_into_container(child, parent)
 
             yield parent
             yield child
-        
+
     def get_additional_item(self, item):
         return self.create_additional_item(
             item,
-            item['_path'],
+            item[self.path_key],
             self.additional_id(item),
             self.content_type,
             self.interfaces(item),
             self.annotations(item))
-    
+
     def rename_item(self, item, new_id):
-        item['_path'] = os.path.join(os.path.dirname(item['_path']), new_id)
+        item[self.path_key] = os.path.join(
+            os.path.dirname(item[self.path_key]), new_id)
 
     def move_item_into_container(self, item, container):
-        item_id = os.path.basename(item['_path'])
-        item['_path'] = os.path.join(container['_path'], item_id)
-    
-    
+        item_id = os.path.basename(item[self.path_key])
+        item[self.path_key] = os.path.join(container[self.path_key], item_id)
+
+
 class ChildInserter(AcquisitionInserter):
     """Inserts a new item to the transmogrifier pipeline as a child
     """
@@ -132,17 +140,17 @@ class ParentInserter(AcquisitionInserter):
     implements(ISection)
 
     insert_as_parent = True
-    
+
 
 class AdditionalObjectInserter(ObjectInserter):
     """Inserts a new item to the transmogrifier pipeline on a variable path
     """
     classProvides(ISectionBlueprint)
     implements(ISection)
-    
+
     def __init__(self, transmogrifier, name, options, previous):
         super(AdditionalObjectInserter, self).__init__(
             transmogrifier, name, options, previous)
-            
+
         self.path = Expression(
             options.get('new-path', None), transmogrifier, name, options)
