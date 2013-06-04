@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier"
+    i18n_domain="ftw.blueprints">
+
+    <transmogrifier:registerConfig
+        name="ftw.blueprints.archetypes"
+        title="ftw example migration configuration for archetypes"
+        description="default migration configuration, should used by every configuration"
+        configuration="archetypes.cfg"
+        />
+
+    <transmogrifier:registerConfig
+        name="ftw.blueprints.dexterity"
+        title="ftw example migration configuration for dexterity"
+        description="default migration configuration, should used by every configuration"
+        configuration="dexterity.cfg"
+        />
+      
+</configure>

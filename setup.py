@@ -1,8 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = open('ftw/blueprints/version.txt').read().strip()
-maintainer = 'Elio Schmutz'
+version = '1.0.dev0'
 
 tests_require = [
     'unittest2',
@@ -15,22 +14,23 @@ tests_require = [
 
 setup(name='ftw.blueprints',
       version=version,
-      description="Package ftw.blueprints (Maintainer: %s)" % maintainer,
-      long_description=open("README.md").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      description="Provides useful blueprints for migrations with " + \
+          "transmogrifier",
+      long_description=open('README.rst').read() + '\n' + \
+          open(os.path.join('docs', 'HISTORY.txt')).read(),
+
       classifiers=[
-          "Framework :: Plone",
-          "Framework :: Zope2",
-          "Framework :: Zope3",
-          "Programming Language :: Python",
-          "Topic :: Software Development :: Libraries :: Python Modules",
+        'Framework :: Plone',
+        'Framework :: Plone :: 4.1',
+        'Framework :: Plone :: 4.2',
+        'Framework :: Plone :: 4.3',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Libraries :: Python Modules',
         ],
       keywords='',
-      author='%s, 4teamwork GmbH' % maintainer,
+      author='4teamwork GmbH',
       author_email='mailto:info@4teamwork.ch',
-      url='',
-      maintainer=maintainer,
+      url='https://github.com/4teamwork/ftw.blueprints',
       license='GPL2',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['ftw'],
@@ -39,14 +39,15 @@ setup(name='ftw.blueprints',
       install_requires=[
           'setuptools',
           'collective.jsonmigrator',
+          'collective.transmogrifier',
           'collective.blueprint.translationlinker',
-          'ftw.inflator'
+          'ftw.inflator',
           # -*- Extra requirements: -*-
       ],
-      
+
       tests_require=tests_require,
       extras_require={'tests': tests_require},
-      
+
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]
