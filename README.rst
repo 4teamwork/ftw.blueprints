@@ -439,8 +439,6 @@ This package is copyright by `4teamwork <http://www.4teamwork.ch/>`_.
 
 ``ftw.blueprints`` is licensed under GNU General Public License, version 2.
 
-.. _collective.deletepermission: https://github.com/4teamwork/collective.deletepermission
-
 .. image:: https://cruel-carlota.pagodabox.com/ec5fd7193023e6cd71398622dd783e64
    :alt: githalytics.com
    :target: http://githalytics.com/4teamwork/ftw.blueprints
