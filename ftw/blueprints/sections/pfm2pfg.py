@@ -18,20 +18,60 @@ class PfmXMLHandler(object):
 
         self.item = item
         self.xml = minidom.parseString(xml_string)
-        self.fields = self.get_elements('field', self.xml)
+        self.groups = self.get_elements('group', self.xml)
+        # self.fields = self.get_elements('field', self.xml)
         self.field = None
 
     def __iter__(self):
 
-        for field in self.fields:
+        for group in self.groups:
 
-            self.field = field
+            yield self.begin_group(group)
 
-            field_utility = self.get_field_utility(field)
-            if not field_utility:
-                raise
+            for field in self.get_elements('field', group):
 
-            yield field_utility(self)
+                self.field = field
+
+                field_utility = self.get_field_utility(field)
+                if not field_utility:
+                    raise
+
+                yield field_utility(self)
+
+            yield self.end_group(group)
+
+    def end_group(self, xml):
+
+        item = {}
+
+        title = self.get_element_value('title', xml)
+
+        if title == 'Default':
+            return item
+
+        item['_id'] = '%s-end' % self.get_element_value('title', xml)
+        item['_type'] = 'FieldsetEnd'
+        item['_path'] = '%s/%s-stop' % (
+                self.item['_path'], self.get_element_value('title', xml))
+
+        return item
+
+    def begin_group(self, xml):
+
+        item = {}
+
+        title = self.get_element_value('title', xml)
+
+        if title == 'Default':
+            return item
+
+        item['_id'] = '%s-start' % self.get_element_value('title', xml)
+        item['_type'] = 'FieldsetStart'
+        item['_path'] = '%s/%s-start' % (
+                self.item['_path'], self.get_element_value('title', xml))
+        item['title'] = title
+        import pdb; pdb.set_trace( )
+        return item
 
     def get_elements(self, name, xml):
         return xml.getElementsByTagName(name)
