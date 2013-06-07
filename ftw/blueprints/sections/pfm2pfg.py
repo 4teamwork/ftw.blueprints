@@ -314,7 +314,12 @@ class FormMailerFieldsInserter(object):
 
     def __iter__(self):
 
+        # Save item-paths for cleanups after migration
+        item_paths = []
+
         for item in self.previous:
+
+            item_paths.append(item['_path'])
 
             # Returns the FormFolder
             yield item
@@ -330,3 +335,17 @@ class FormMailerFieldsInserter(object):
 
             for field in pfmxmlhandler:
                 yield field
+
+        for path in item_paths:
+            folder = self.context.unrestrictedTraverse(
+                            str(path).lstrip('/'), None)
+
+            if not folder:
+                continue
+
+            folder._delObject('replyto')
+            folder._delObject('topic')
+            folder._delObject('comments')
+            folder.reindexObject()
+            import transaction
+            transaction.commit()
