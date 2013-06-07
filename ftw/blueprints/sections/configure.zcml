@@ -129,7 +129,7 @@
       name="ftw.blueprints.pfm2pfg.MultiListField"
       />
   <utility
-      component=".pfm2pfg.FormMultiSelectionFieldRadio"
+      component=".pfm2pfg.FormMultiSelectionFieldCheckbox"
       name="ftw.blueprints.pfm2pfg.MultiCheckBoxField"
       />
 </configure>
