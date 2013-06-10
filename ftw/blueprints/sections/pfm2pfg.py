@@ -14,7 +14,6 @@ import transaction
 class PFM2PFGConverter(object):
     implements(IPFM2PFGConverter)
 
-
     def __init__(self, item, xml_string):
 
         self.handler = XMLHandler()
@@ -88,7 +87,6 @@ class PFM2PFGConverter(object):
         item['_type'] = 'FieldsetStart'
         item['_path'] = '%s/%s-start' % (self.item['_path'], title)
 
-
         return item
 
 
@@ -103,9 +101,8 @@ class FormGenField(dict):
         self.field = field
         self.item = item
 
-        self.fill_field
+        self.fill_field()
 
-    @property
     def fill_field(self):
 
         for method in dir(self):
@@ -115,7 +112,8 @@ class FormGenField(dict):
     def _get_filtered_element_value(self, name):
 
         value = self.handler.get_element_value(self.field, name)
-        type_ = self.handler.get_element_attribute_value(self.field, name, 'type')
+        type_ = self.handler.get_element_attribute_value(
+            self.field, name, 'type')
 
         if type_ == 'float':
             return float(value)
@@ -197,6 +195,7 @@ class FormFixedPointField(FormGenField):
 
     form_type = 'FormFixedPointField'
 
+
 class FormDateField(FormGenField):
     classProvides(IFormGenField)
 
@@ -250,11 +249,13 @@ class FormSelectionField(FormGenField):
         if value:
             self['fgDefault'] = value
 
+
 class FormSelectionFieldSelect(FormSelectionField):
     classProvides(IFormGenField)
 
     def get_fgFormat(self):
         self['fgFormat'] = 'select'
+
 
 class FormSelectionFieldRadio(FormSelectionField):
     classProvides(IFormGenField)
@@ -287,7 +288,6 @@ class FormMailerFieldsInserter(object):
     classProvides(ISectionBlueprint)
     implements(ISection)
 
-
     def __init__(self, transmogrifier, name, options, previous):
         self.context = transmogrifier.context
         self.previous = previous
@@ -314,7 +314,6 @@ class FormMailerFieldsInserter(object):
             for field in converter:
                 yield field
 
-
     def cleanup(self, path):
 
         to_remove = ['replyto', 'topic', 'comments']
@@ -333,4 +332,3 @@ class FormMailerFieldsInserter(object):
 
         folder.reindexObject()
         transaction.commit()
-

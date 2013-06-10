@@ -24,11 +24,14 @@ class ObjectInserter(object):
         self.additional_id = Expression(
             options.get('additional-id'), transmogrifier, name, options)
         self.interfaces = Expression(
-            options.get('_interfaces', 'python:[]'), transmogrifier, name, options)
+            options.get(
+                '_interfaces', 'python:[]'), transmogrifier, name, options)
         self.annotations = Expression(
-            options.get('_annotations', 'python:{}'), transmogrifier, name, options)
+            options.get(
+                '_annotations', 'python:{}'), transmogrifier, name, options)
         self.metadata = Expression(
-            options.get('metadata-key', 'python:{}'), transmogrifier, name, options)
+            options.get(
+                'metadata-key', 'python:{}'), transmogrifier, name, options)
         self.path = None
 
     def __iter__(self):
@@ -51,7 +54,8 @@ class ObjectInserter(object):
             self.annotations(item))
 
     def create_additional_item(
-        self, item, path, additional_id, content_type, interfaces, annotations):
+        self, item, path, additional_id,
+        content_type, interfaces, annotations):
 
         additional_item = {
                 self.contenttype_key: content_type,
