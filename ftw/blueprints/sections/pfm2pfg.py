@@ -1,58 +1,70 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from DateTime import DateTime
-from xml.dom import minidom
 from zope.component import queryUtility
 from zope.interface import classProvides, implements
-from zope.interface import Interface
+from ftw.blueprints.interfaces import IFormGenField
+from ftw.blueprints.interfaces import IPFM2PFGConverter
+from ftw.blueprints.handlers import XMLHandler
 
 
-class PfmXMLHandler(object):
+class PFM2PFGConverter(object):
+    implements(IPFM2PFGConverter)
+
 
     def __init__(self, item, xml_string):
         """
         """
-
-        if isinstance(xml_string, unicode):
-            xml_string = xml_string.encode('utf-8')
-
+        self.handler = XMLHandler()
         self.item = item
-        self.xml = minidom.parseString(xml_string)
-        self.groups = self.get_elements('group', self.xml)
-        # self.fields = self.get_elements('field', self.xml)
-        self.field = None
+        self.xml_string = xml_string
 
     def __iter__(self):
-
-        for group in self.groups:
+        """
+        """
+        for group in self.handler.get_elements(
+            self.handler.parse_xml_string(self.xml_string),
+            'group'):
 
             yield self.begin_group(group)
 
-            for field in self.get_elements('field', group):
+            for field in self.handler.get_elements(group, 'field'):
 
-                self.field = field
-
-                field_utility = self.get_field_utility(field)
-                if not field_utility:
-                    raise
-
-                yield field_utility(self)
+                yield self.get_pfg_field(field)
 
             yield self.end_group(group)
+
+    def get_pfg_field(self, field):
+        """
+        """
+        pfm_type = self.handler.get_element_value(field, 'type')
+
+        field_utility = self.get_field_utility(pfm_type)
+        if not field_utility:
+            raise
+
+        return field_utility(field, self.item)
+
+    def get_field_utility(self, type_):
+        """Returns the assosiated utility for pfg fields
+        """
+
+        return queryUtility(
+            IFormGenField,
+            'ftw.blueprints.pfm2pfg.%s' % type_)
 
     def end_group(self, xml):
 
         item = {}
 
-        title = self.get_element_value('title', xml)
+        title = self.handler.get_element_value(xml, 'title')
 
         if title == 'Default':
             return item
 
-        item['_id'] = '%s-end' % self.get_element_value('title', xml)
+        item['_id'] = '%s-end' % title
         item['_type'] = 'FieldsetEnd'
-        item['_path'] = '%s/%s-stop' % (
-                self.item['_path'], self.get_element_value('title', xml))
+        item['_path'] = '%s/%s-stop' % (self.item['_path'], title)
 
         return item
 
@@ -60,58 +72,45 @@ class PfmXMLHandler(object):
 
         item = {}
 
-        title = self.get_element_value('title', xml)
+        title = self.handler.get_element_value(xml, 'title')
 
         if title == 'Default':
             return item
 
-        item['_id'] = '%s-start' % self.get_element_value('title', xml)
+        item['_id'] = '%s-start' % title
         item['_type'] = 'FieldsetStart'
-        item['_path'] = '%s/%s-start' % (
-                self.item['_path'], self.get_element_value('title', xml))
+        item['_path'] = '%s/%s-start' % (self.item['_path'], title)
         item['title'] = title
-        import pdb; pdb.set_trace( )
+
         return item
 
-    def get_elements(self, name, xml):
-        return xml.getElementsByTagName(name)
 
-    def get_first_element(self, name, xml):
-        elements = self.get_elements(name, xml)
+class FormGenField(dict):
+    """
+    """
+    implements(IFormGenField)
 
-        if elements:
-            return elements[0]
-        return None
+    form_type = None
 
-    def get_element_value(self, name, xml):
-        value = self._get_element_value(name, xml)
-        return self._filter_element_value(name, value, xml)
+    def __init__(self, field, item):
 
-    def get_element_attribute(self, name, attribute, xml):
-        element = self.get_first_element(name, xml)
+        self.handler = XMLHandler()
+        self.field = field
+        self.item = item
 
-        if not element:
-            return ''
+        self.fill_field
 
-        return element.getAttribute(attribute)
+    @property
+    def fill_field(self):
 
-    def _get_element_value(self, name, xml):
+        for method in dir(self):
+            if method.startswith('get_'):
+                getattr(self, method)()
 
-        element = self.get_first_element(name, xml)
+    def _get_filtered_element_value(self, name):
 
-        if not element:
-            return ''
-
-        childs = element.childNodes
-
-        if not childs:
-            return ''
-
-        return childs[0].data
-
-    def _filter_element_value(self, name, value, xml):
-
-        type_ = self.get_element_attribute(name, 'type', xml)
+        value = self.handler.get_element_value(self.field, name)
+        type_ = self.handler.get_element_attribute_value(self.field, name, 'type')
 
         if type_ == 'float':
             return float(value)
@@ -129,61 +128,30 @@ class PfmXMLHandler(object):
 
         return value
 
-    def get_field_utility(self, field):
-        """Returns the assosiated utility for pfg fields
-        """
-
-        return queryUtility(
-            IFormGenField,
-            'ftw.blueprints.pfm2pfg.%s' % self.get_element_value(
-                'type', self.field))
-
-
-class IFormGenField(Interface):
-    """
-    """
-
-
-class FormGenField(dict):
-    """
-    """
-    classProvides(IFormGenField)
-
-    form_type = None
-
-    def __init__(self, pfmxmlhandler):
-
-        self.handler = pfmxmlhandler
-        self.field = self.handler.field
-
-        for method in dir(self):
-            if method.startswith('get_'):
-                getattr(self, method)()
-
     def get_path(self):
         self['_path'] = '%s/%s' % (
-            self.handler.item['_path'], self.handler.get_element_value('id', self.field))
+            self.item['_path'], self._get_filtered_element_value('id'))
 
     def get_id(self):
-        self['_id'] = self.handler.get_element_value('id', self.field)
+        self['_id'] = self._get_filtered_element_value('id')
 
     def get_type(self):
         self['_type'] = self.form_type
 
     def get_title(self):
-        self['title'] = self.handler.get_element_value('title', self.field)
+        self['title'] = self._get_filtered_element_value('title')
 
     def get_required(self):
-        self['required'] = self.handler.get_element_value('required', self.field)
+        self['required'] = self._get_filtered_element_value('required')
 
     def get_description(self):
-        self['description'] = self.handler.get_element_value('description', self.field)
+        self['description'] = self._get_filtered_element_value('description')
 
     def get_hidden(self):
-        self['hidden'] = self.handler.get_element_value('hidden', self.field)
+        self['hidden'] = self._get_filtered_element_value('hidden')
 
     def get_default(self):
-        self['fgDefault'] = self.handler.get_element_value('default', self.field)
+        self['fgDefault'] = self._get_filtered_element_value('default')
 
 
 class FormStringField(FormGenField):
@@ -291,11 +259,11 @@ class FormSelectionField(FormGenField):
     form_type = 'FormSelectionField'
 
     def get_fgVocabulary(self):
-        value = self.handler.get_element_value('items', self.field)
+        value = self._get_filtered_element_value('items')
         self['fgVocabulary'] = [key for key, val in value]
 
     def get_default(self):
-        value = self.handler.get_element_value('default', self.field)
+        value = self._get_filtered_element_value('default')
 
         if value:
             self['fgDefault'] = value
@@ -371,7 +339,7 @@ class FormMailerFieldsInserter(object):
                 yield item
                 continue
 
-            pfmxmlhandler = PfmXMLHandler(item, form_data)
+            pfmxmlhandler = PFM2PFGConverter(item, form_data)
 
             for field in pfmxmlhandler:
                 yield field
