@@ -9,8 +9,6 @@ class XMLHandler(object):
     implements(IXMLHandler)
 
     def parse_xml_string(self, xml_string):
-        """
-        """
 
         if isinstance(xml_string, unicode):
             xml_string = xml_string.encode('utf-8')

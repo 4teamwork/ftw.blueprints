@@ -62,7 +62,11 @@ Blueprints provided by this package
     - Map your old workflows with new ones.
 
 - ftw.blueprints.parentworkflowmapper
-    - assume the parents workflowstate for the item
+    - Assume the parents workflowstate for the item
+
+- ftw.blueprints.formmailerfieldsinserter
+    - Blueprint to convert the very old PloneFormMailer fields to the new
+    PloneFormGen archetype fields
 
 <!-- Under construction - deprecated -->
 
@@ -423,6 +427,31 @@ Visual Example:
               | 1.1.1                  | 1.2.1
               |                        |
            +--+------------------------+----------+
+
+ftw.blueprints.formmailerfieldsinserter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Blueprint to convert the very old PloneFormMailer fields to the new
+PloneFormGen archetype fields
+
+The Problem converting the fields of the PloneFormMailer is, that they aren't
+Archetype fields like in the PloneFormGen. To convert it automatically, we
+use the formXML function of the Formulator package and put the exportet xml-
+form-representation into the item exported with collective.jsonify.
+
+After creating the Form itself trough the pipeline, we parse the xml and
+convert it to a transmogrifier item who is creating the new archetype-fields.
+
+See the example ftw.blueprints.pfm2pfg config to see how to implement
+the PloneFormMailer migration correctly into the pipeline.
+
+Minimal configuration:
+
+.. code:: cfg
+
+    [formmailerfieldsinserter]
+    blueprint = ftw.blueprints.formmailerfieldsinserter
+
 
 Links
 -----

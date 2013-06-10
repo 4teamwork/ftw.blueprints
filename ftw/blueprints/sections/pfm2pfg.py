@@ -1,11 +1,14 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from DateTime import DateTime
-from zope.component import queryUtility
-from zope.interface import classProvides, implements
+from ftw.blueprints.handlers import XMLHandler
 from ftw.blueprints.interfaces import IFormGenField
 from ftw.blueprints.interfaces import IPFM2PFGConverter
-from ftw.blueprints.handlers import XMLHandler
+from plone.i18n.normalizer.interfaces import IIDNormalizer
+from zope.component import getUtility
+from zope.component import queryUtility
+from zope.interface import classProvides, implements
+import transaction
 
 
 class PFM2PFGConverter(object):
@@ -13,15 +16,14 @@ class PFM2PFGConverter(object):
 
 
     def __init__(self, item, xml_string):
-        """
-        """
+
         self.handler = XMLHandler()
         self.item = item
         self.xml_string = xml_string
+        self.normalizer = getUtility(IIDNormalizer)
 
     def __iter__(self):
-        """
-        """
+
         for group in self.handler.get_elements(
             self.handler.parse_xml_string(self.xml_string),
             'group'):
@@ -35,8 +37,7 @@ class PFM2PFGConverter(object):
             yield self.end_group(group)
 
     def get_pfg_field(self, field):
-        """
-        """
+
         pfm_type = self.handler.get_element_value(field, 'type')
 
         field_utility = self.get_field_utility(pfm_type)
@@ -62,6 +63,8 @@ class PFM2PFGConverter(object):
         if title == 'Default':
             return item
 
+        title = self.normalizer.normalize(title)
+
         item['_id'] = '%s-end' % title
         item['_type'] = 'FieldsetEnd'
         item['_path'] = '%s/%s-stop' % (self.item['_path'], title)
@@ -77,17 +80,19 @@ class PFM2PFGConverter(object):
         if title == 'Default':
             return item
 
+        item['title'] = title
+
+        title = self.normalizer.normalize(title)
+
         item['_id'] = '%s-start' % title
         item['_type'] = 'FieldsetStart'
         item['_path'] = '%s/%s-start' % (self.item['_path'], title)
-        item['title'] = title
+
 
         return item
 
 
 class FormGenField(dict):
-    """
-    """
     implements(IFormGenField)
 
     form_type = None
@@ -126,7 +131,10 @@ class FormGenField(dict):
         elif type_ == 'datetime':
             return DateTime(value)
 
-        return value
+        try:
+            return value.encode('utf-8')
+        except UnicodeEncodeError:
+            return value
 
     def get_path(self):
         self['_path'] = '%s/%s' % (
@@ -155,87 +163,65 @@ class FormGenField(dict):
 
 
 class FormStringField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormStringField'
 
 
 class FormTextField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormTextField'
 
 
 class FormPasswordField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormPasswordField'
 
 
 class FormRichLabelField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormRichLabelField'
 
 
 class FormIntegerField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormIntegerField'
 
 
 class FormFixedPointField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormFixedPointField'
 
 class FormDateField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormDateField'
 
 
 class FormFileField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormFileField'
 
 
 class FormLinesField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormLinesField'
 
 
 class FormBooleanField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormBooleanField'
 
 
 class FormStringFieldEmail(FormStringField):
-    """
-    """
     classProvides(IFormGenField)
 
     def get_fgStringValidator(self):
@@ -243,8 +229,6 @@ class FormStringFieldEmail(FormStringField):
 
 
 class FormStringFieldURL(FormStringField):
-    """
-    """
     classProvides(IFormGenField)
 
     def get_fgStringValidator(self):
@@ -252,8 +236,6 @@ class FormStringFieldURL(FormStringField):
 
 
 class FormSelectionField(FormGenField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormSelectionField'
@@ -269,16 +251,12 @@ class FormSelectionField(FormGenField):
             self['fgDefault'] = value
 
 class FormSelectionFieldSelect(FormSelectionField):
-    """
-    """
     classProvides(IFormGenField)
 
     def get_fgFormat(self):
         self['fgFormat'] = 'select'
 
 class FormSelectionFieldRadio(FormSelectionField):
-    """
-    """
     classProvides(IFormGenField)
 
     def get_fgFormat(self):
@@ -286,16 +264,12 @@ class FormSelectionFieldRadio(FormSelectionField):
 
 
 class FormMultiSelectionField(FormSelectionField):
-    """
-    """
     classProvides(IFormGenField)
 
     form_type = 'FormMultiSelectionField'
 
 
 class FormMultiSelectionFieldSelect(FormMultiSelectionField):
-    """
-    """
     classProvides(IFormGenField)
 
     def get_fgFormat(self):
@@ -303,8 +277,6 @@ class FormMultiSelectionFieldSelect(FormMultiSelectionField):
 
 
 class FormMultiSelectionFieldCheckbox(FormMultiSelectionField):
-    """
-    """
     classProvides(IFormGenField)
 
     def get_fgFormat(self):
@@ -322,38 +294,43 @@ class FormMailerFieldsInserter(object):
 
     def __iter__(self):
 
-        # Save item-paths for cleanups after migration
-        item_paths = []
-
         for item in self.previous:
-
-            item_paths.append(item['_path'])
 
             # Returns the FormFolder
             yield item
 
-            # After we handle the form fields
+            # Cleanup the auto-created fields before adding the fields
+            self.cleanup(item['_path'])
+
+            # After cleanup, we handle the form fields
             form_data = item.get('form_data')
 
             if not form_data:
                 yield item
                 continue
 
-            pfmxmlhandler = PFM2PFGConverter(item, form_data)
+            converter = PFM2PFGConverter(item, form_data)
 
-            for field in pfmxmlhandler:
+            for field in converter:
                 yield field
 
-        for path in item_paths:
-            folder = self.context.unrestrictedTraverse(
+
+    def cleanup(self, path):
+
+        to_remove = ['replyto', 'topic', 'comments']
+
+        folder = self.context.unrestrictedTraverse(
                             str(path).lstrip('/'), None)
 
-            if not folder:
+        if not folder:
+            return
+
+        for field in to_remove:
+            if not hasattr(folder, field):
                 continue
 
-            folder._delObject('replyto')
-            folder._delObject('topic')
-            folder._delObject('comments')
-            folder.reindexObject()
-            import transaction
-            transaction.commit()
+            folder._delObject(field)
+
+        folder.reindexObject()
+        transaction.commit()
+

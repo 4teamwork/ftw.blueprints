@@ -16,5 +16,11 @@
         description="default migration configuration, should used by every configuration"
         configuration="dexterity.cfg"
         />
-      
+
+    <transmogrifier:registerConfig
+        name="ftw.blueprints.pfm2pfg"
+        title="ftw example migration configuration for PloneFormMailer"
+        description="can be used to migrate the PloneFormMailer to PloneFormGen"
+        configuration="pfm2pfg.cfg"
+        />
 </configure>
