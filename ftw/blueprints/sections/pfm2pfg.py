@@ -8,7 +8,6 @@ from plone.i18n.normalizer.interfaces import IIDNormalizer
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.interface import classProvides, implements
-import transaction
 
 
 class PFM2PFGConverter(object):
@@ -23,9 +22,9 @@ class PFM2PFGConverter(object):
 
     def __iter__(self):
 
-        for group in self.handler.get_elements(
-            self.handler.parse_xml_string(self.xml_string),
-            'group'):
+        xml = self.handler.parse_xml_string(self.xml_string)
+
+        for group in self.handler.get_elements(xml, 'group'):
 
             yield self.begin_group(group)
 
@@ -43,7 +42,10 @@ class PFM2PFGConverter(object):
         if not field_utility:
             raise
 
-        return field_utility(field, self.item)
+        pfg_field = field_utility(field, self.item)
+        pfg_field.fill_field()
+
+        return pfg_field
 
     def get_field_utility(self, type_):
         """Returns the assosiated utility for pfg fields
@@ -101,12 +103,10 @@ class FormGenField(dict):
         self.field = field
         self.item = item
 
-        self.fill_field()
-
     def fill_field(self):
 
         for method in dir(self):
-            if method.startswith('get_'):
+            if method.startswith('set_'):
                 getattr(self, method)()
 
     def _get_filtered_element_value(self, name):
@@ -129,34 +129,34 @@ class FormGenField(dict):
         elif type_ == 'datetime':
             return DateTime(value)
 
-        try:
+        if isinstance(value, unicode):
             return value.encode('utf-8')
-        except UnicodeEncodeError:
+        else:
             return value
 
-    def get_path(self):
+    def set_path(self):
         self['_path'] = '%s/%s' % (
             self.item['_path'], self._get_filtered_element_value('id'))
 
-    def get_id(self):
+    def set_id(self):
         self['_id'] = self._get_filtered_element_value('id')
 
-    def get_type(self):
+    def set_type(self):
         self['_type'] = self.form_type
 
-    def get_title(self):
+    def set_title(self):
         self['title'] = self._get_filtered_element_value('title')
 
-    def get_required(self):
+    def set_required(self):
         self['required'] = self._get_filtered_element_value('required')
 
-    def get_description(self):
+    def set_description(self):
         self['description'] = self._get_filtered_element_value('description')
 
-    def get_hidden(self):
+    def set_hidden(self):
         self['hidden'] = self._get_filtered_element_value('hidden')
 
-    def get_default(self):
+    def set_default(self):
         self['fgDefault'] = self._get_filtered_element_value('default')
 
 
@@ -223,14 +223,14 @@ class FormBooleanField(FormGenField):
 class FormStringFieldEmail(FormStringField):
     classProvides(IFormGenField)
 
-    def get_fgStringValidator(self):
+    def set_fg_string_validator(self):
         self['fgStringValidator'] = 'isEmail'
 
 
 class FormStringFieldURL(FormStringField):
     classProvides(IFormGenField)
 
-    def get_fgStringValidator(self):
+    def set_fg_string_validator(self):
         self['fgStringValidator'] = 'isURL'
 
 
@@ -239,11 +239,11 @@ class FormSelectionField(FormGenField):
 
     form_type = 'FormSelectionField'
 
-    def get_fgVocabulary(self):
+    def set_fg_vocabulary(self):
         value = self._get_filtered_element_value('items')
         self['fgVocabulary'] = [key for key, val in value]
 
-    def get_default(self):
+    def set_default(self):
         value = self._get_filtered_element_value('default')
 
         if value:
@@ -253,14 +253,14 @@ class FormSelectionField(FormGenField):
 class FormSelectionFieldSelect(FormSelectionField):
     classProvides(IFormGenField)
 
-    def get_fgFormat(self):
+    def set_fg_format(self):
         self['fgFormat'] = 'select'
 
 
 class FormSelectionFieldRadio(FormSelectionField):
     classProvides(IFormGenField)
 
-    def get_fgFormat(self):
+    def set_fg_format(self):
         self['fgFormat'] = 'radio'
 
 
@@ -273,14 +273,14 @@ class FormMultiSelectionField(FormSelectionField):
 class FormMultiSelectionFieldSelect(FormMultiSelectionField):
     classProvides(IFormGenField)
 
-    def get_fgFormat(self):
+    def set_fg_format(self):
         self['fgFormat'] = 'select'
 
 
 class FormMultiSelectionFieldCheckbox(FormMultiSelectionField):
     classProvides(IFormGenField)
 
-    def get_fgFormat(self):
+    def set_fg_format(self):
         self['fgFormat'] = 'checkbox'
 
 
@@ -331,4 +331,3 @@ class FormMailerFieldsInserter(object):
             folder._delObject(field)
 
         folder.reindexObject()
-        transaction.commit()

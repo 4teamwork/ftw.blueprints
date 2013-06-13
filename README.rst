@@ -64,7 +64,7 @@ Blueprints provided by this package
 - ftw.blueprints.parentworkflowmapper
     - Assume the parents workflowstate for the item
 
-- ftw.blueprints.formmailerfieldsinserter
+- ftw.blueprints.formmailer-fields-inserter
     - Blueprint to convert the very old PloneFormMailer fields to the new
     PloneFormGen archetype fields
 
@@ -428,7 +428,7 @@ Visual Example:
               |                        |
            +--+------------------------+----------+
 
-ftw.blueprints.formmailerfieldsinserter
+ftw.blueprints.formmailer-fields-inserter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Blueprint to convert the very old PloneFormMailer fields to the new
@@ -436,21 +436,21 @@ PloneFormGen archetype fields
 
 The Problem converting the fields of the PloneFormMailer is, that they aren't
 Archetype fields like in the PloneFormGen. To convert it automatically, we
-use the formXML function of the Formulator package and put the exportet xml-
+use the formXML function of the Formulator package and put the exported xml-
 form-representation into the item exported with collective.jsonify.
 
-After creating the Form itself trough the pipeline, we parse the xml and
-convert it to a transmogrifier item who is creating the new archetype-fields.
+After creating the form itself trough the pipeline, we parse the xml and
+convert it to a transmogrifier item with the archetypes fields.
 
-See the example ftw.blueprints.pfm2pfg config to see how to implement
+See the example ftw.blueprints.pfm2pfg config to see how to integrate
 the PloneFormMailer migration correctly into the pipeline.
 
 Minimal configuration:
 
 .. code:: cfg
 
-    [formmailerfieldsinserter]
-    blueprint = ftw.blueprints.formmailerfieldsinserter
+    [formmailer-fields-inserter]
+    blueprint = ftw.blueprints.formmailer-fields-inserter
 
 
 Links

@@ -4,8 +4,6 @@ from xml.dom import minidom
 
 
 class XMLHandler(object):
-    """Some useful functions to handle xmls exportet from GenerericSetup
-    """
     implements(IXMLHandler)
 
     def parse_xml_string(self, xml_string):
@@ -32,12 +30,12 @@ class XMLHandler(object):
         if not element:
             return ''
 
-        childs = element.childNodes
+        children = element.childNodes
 
-        if not childs:
+        if not children:
             return ''
 
-        return childs[0].data
+        return children[0].data
 
     def get_element_attribute_value(self, xml, element_name, attribute_name):
 
