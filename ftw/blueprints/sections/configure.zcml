@@ -33,7 +33,7 @@
   <utility
       component=".annotate.UpdateDefaultViewObjectPath"
       name="ftw.blueprints.updatedefaultviewobjectpath"
-      />      
+      />
   <utility
       component=".annotate.CheckIsDefaultViewObject"
       name="ftw.blueprints.checkisdefaultviewobject"
@@ -53,9 +53,5 @@
   <utility
       component=".updater.DataUpdater"
       name="ftw.blueprints.dataupdater"
-      />
-  <utility
-      component="collective.transmogrifier.sections.tests.PrettyPrinter"
-      name="collective.transmogrifier.sections.tests.pprinter"
       />
 </configure>
