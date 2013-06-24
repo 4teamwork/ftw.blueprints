@@ -17,4 +17,5 @@ class Logger(object):
     def __iter__(self):
         for item in self.previous:
             self.logger.info(str(self.print_out(item)))
-            yield item; continue
+            yield item
+            continue

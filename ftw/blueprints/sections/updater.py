@@ -13,7 +13,7 @@ class DataUpdater(object):
     """
     Updates base64 encoded blob data on the item
     """
-    
+
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
         self.context = transmogrifier.context
@@ -32,20 +32,21 @@ class DataUpdater(object):
 
             file_obj = self.context.unrestrictedTraverse(
                             str(item['_path']).lstrip('/'), None)
-            
+
             if not file_obj:
-                self.logger.warn("Context does not exist at %s" % item['_path'])
+                self.logger.warn(
+                    "Context does not exist at %s" % item['_path'])
 
                 yield item
-                continue;
-            
+                continue
+
             field = file_obj.Schema()[self.schema_field]
             value = item.get(self.data_field, {})
 
             self._update_data_field(file_obj, field, value)
 
             yield item
-    
+
     def _update_data_field(self, obj, field, value):
 
         if not value.get('data'):

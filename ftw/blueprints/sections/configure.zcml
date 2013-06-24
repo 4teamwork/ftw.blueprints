@@ -54,4 +54,8 @@
       component=".updater.DataUpdater"
       name="ftw.blueprints.dataupdater"
       />
+  <utility
+      component=".pfm2pfg.FormMailerFieldsInserter"
+      name="ftw.blueprints.formmailer-fields-inserter"
+      />
 </configure>
