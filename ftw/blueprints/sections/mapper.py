@@ -50,10 +50,18 @@ class FieldMapper(object):
         self.mapper = Expression(
             options['field-mapping'], transmogrifier, name, options)
 
+        self.condition = Condition(options.get('condition', 'python:True'),
+            transmogrifier, name, options)
+
         self.previous = previous
 
     def __iter__(self):
         for item in self.previous:
+
+            if not self.condition(item):
+                yield item
+                continue
+
             mapper = self.mapper(item)
             for src, dest in mapper.items():
                 dest_name = dest.get('destination', None)

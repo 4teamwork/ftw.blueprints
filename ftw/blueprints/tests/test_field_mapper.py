@@ -126,6 +126,18 @@ class TestFieldMapper(TestCase):
 
         assert_result(self, self.klass, options, expected)
 
+    def test_do_no_changes_if_condition_is_false(self):
+        expected = INPUT.copy()
+
+        options = {
+            'field-mapping':
+            "python:{'_id': {'static_value': 'static_id'}}",
+            'condition': 'python:False'
+            }
+
+        assert_result(self, self.klass, options, expected)
+
+
 def check_implements_on_class(context, klass, interface):
 
     context.assertTrue(interface.implementedBy(klass),
