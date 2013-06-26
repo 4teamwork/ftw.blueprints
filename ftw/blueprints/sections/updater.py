@@ -1,6 +1,7 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import Condition
+from Products.Archetypes.interfaces import IBaseObject
 from zope.interface import classProvides, implements
 import base64
 import logging
@@ -33,14 +34,19 @@ class DataUpdater(object):
             file_obj = self.context.unrestrictedTraverse(
                             str(item['_path']).lstrip('/'), None)
 
-            if not file_obj:
+            if not file_obj and not IBaseObject.providedBy(file_obj):
                 self.logger.warn(
                     "Context does not exist at %s" % item['_path'])
 
                 yield item
                 continue
 
-            field = file_obj.Schema()[self.schema_field]
+            field = file_obj.Schema().get(self.schema_field)
+
+            if not field:
+                yield item
+                continue
+
             value = item.get(self.data_field, {})
 
             self._update_data_field(file_obj, field, value)

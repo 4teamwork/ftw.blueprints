@@ -31,6 +31,21 @@ Compatibility
 
 Runs with `Plone <http://www.plone.org/>`_ `4.1`, `4.2` or `4.3`.
 
+Plone 4.1
+
+.. image:: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.1.x.cfg/badge/icon
+   :target: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.1.x.cfg
+
+Plone 4.2
+
+.. image:: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.2.x.cfg/badge/icon
+   :target: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.2.x.cfg
+
+Plone 4.3
+
+.. image:: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.3.x.cfg/badge/icon
+   :target: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.3.x.cfg
+
 
 Blueprints provided by this package
 -----------------------------------
