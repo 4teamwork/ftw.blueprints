@@ -73,11 +73,8 @@ Blueprints provided by this package
     - Alternate to the printer blueprint. Configurable logging blueprint to
     log the information given in an expression.
 
-- ftw.blueprints.workflowmapper
-    - Map your old workflows with new ones.
-
-- ftw.blueprints.parentworkflowmapper
-    - Assume the parents workflowstate for the item
+- ftw.blueprints.workflowmanager
+    - Manages the workflow states, transitions and history
 
 - ftw.blueprints.formmailer-fields-inserter
     - Blueprint to convert the very old PloneFormMailer fields to the new
@@ -85,11 +82,9 @@ Blueprints provided by this package
 
 <!-- Under construction - deprecated -->
 
-
 - ftw.blueprints.annotatedefaultviewpathobjects
 - ftw.blueprints.updatedefaultviewobjectpath
 - ftw.blueprints.checkisdefaultviewobject
-- ftw.blueprints.workflowupdater
 
 ftw.blueprints.fieldmapper
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,7 +252,7 @@ Optional options:
 
 - _annotations
   - adds annotations as a dict to the child-item
-  - expression, sict
+  - expression, dict
 
 Full configuration
 
@@ -442,6 +437,66 @@ Visual Example:
               | 1.1.1                  | 1.2.1
               |                        |
            +--+------------------------+----------+
+
+
+ftw.blueprints.workflowmanager
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Blueprint to manage workflows after migration
+
+Whith this blueprint it's possible to migrate the workflowhistory and
+the reviewstate.
+
+It provides workflow-mapping, states-mapping and transition-mapping.
+
+Required options:
+
+- old-workflow-id
+  - the name of the old workflow you want to migrate
+  - String
+
+Minimal configuration:
+
+.. code:: cfg
+
+    [workflowmanager]
+    blueprint = ftw.blueprints.workflowmanager
+    old-workflow-id = simple_publication_workflow
+
+Optional options:
+
+- update-history
+  - default: True
+  - Set it to False if you just want to update the review_state
+
+- new-workflow-id
+  - if the name of the new workflow differs to the old one.
+  - String
+
+- state-map
+  - mapping for the old states to the new ones
+  - expression, dict
+
+- transition-map
+  - mapping for the old transitions to the new ones
+  - expression, dict
+
+Full configuration
+
+.. code:: cfg
+
+    [workflowmanager]
+    blueprint = ftw.blueprints.workflowmanager
+    old-workflow-id = IntranetPublicationWorkflow
+    new-workflow-id = intranet_secure_workflow
+    state-map = python: {
+        'draft': 'intranet_secure_workflow--STATUS--draft',
+        'published': 'intranet_secure_workflow--STATUS--published',
+        'revision': 'intranet_secure_workflow--STATUS--revision'}
+    transition-map = python: {
+        'publish': 'intranet_secure_workflow--TRANSITION--publish',
+        'retract': 'intranet_secure_workflow--TRANSITION--retract'}
+
 
 ftw.blueprints.formmailer-fields-inserter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
