@@ -1,6 +1,7 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from ftw.blueprints.sections import mapper
+from ftw.blueprints.tests.utils import TestTransmogrifier
 from unittest2 import TestCase
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
@@ -158,7 +159,7 @@ def check_provides_on_class(context, klass, interface):
 
 def assert_result(context, inserter, options, expected):
 
-    source = inserter(None, 'test', options, [INPUT.copy()])
+    source = inserter(TestTransmogrifier(), 'test', options, [INPUT.copy()])
     output = list(source)
 
     context.maxDiff = None

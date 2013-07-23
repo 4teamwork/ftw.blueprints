@@ -15,18 +15,6 @@
       name="ftw.blueprints.logger"
       />
   <utility
-      component=".workflow.WorkflowMapper"
-      name="ftw.blueprints.workflowmapper"
-      />
-  <utility
-      component=".workflow.WorkflowUpdater"
-      name="ftw.blueprints.workflowupdater"
-      />
-  <utility
-      component=".workflow.ParentWorkflowMapper"
-      name="ftw.blueprints.parentworkflowmapper"
-      />
-  <utility
       component=".annotate.AnnotateDefaultViewPathObjects"
       name="ftw.blueprints.annotatedefaultviewpathobjects"
       />
@@ -57,5 +45,9 @@
   <utility
       component=".pfm2pfg.FormMailerFieldsInserter"
       name="ftw.blueprints.formmailer-fields-inserter"
+      />
+  <utility
+      component=".workflow.WorkflowManager"
+      name="ftw.blueprints.workflowmanager"
       />
 </configure>
