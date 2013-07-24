@@ -57,7 +57,7 @@ class WorkflowManager(object):
         self.context = transmogrifier.context
         self.wftool = getToolByName(self.context, 'portal_workflow')
 
-        self.pathkkey = options.get('path-key', '_path')
+        self.pathkey = options.get('path-key', '_path')
         self.history_key = options.get('history-key', '_workflow_history')
         self.state_key = options.get('state-key', '_review_state')
 
@@ -83,9 +83,9 @@ class WorkflowManager(object):
                 yield item
                 continue
 
-            obj = traverse(self.context, item[self.pathkkey])
-            if not obj or not IBaseObject.providedBy(obj) or not getattr(
-                obj, 'workflow_history', False):
+            obj = traverse(self.context, item.get(self.pathkey, ''))
+            if not obj or not IBaseObject.providedBy(obj) or not hasattr(
+                obj, 'workflow_history'):
                 yield item
                 continue
 
