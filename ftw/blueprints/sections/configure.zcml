@@ -50,4 +50,8 @@
       component=".workflow.WorkflowManager"
       name="ftw.blueprints.workflowmanager"
       />
+  <utility
+      component=".portlet.ContextualPortletAdder"
+      name="ftw.blueprints.ContextualPortletAdder"
+      />
 </configure>
