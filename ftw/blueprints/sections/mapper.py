@@ -68,10 +68,10 @@ class FieldMapper(object):
                 transform_value = dest.get('transform', '')
                 static_value = dest.get('static_value', '')
                 map_value = dest.get('map_value', '')
-                src_val = item.get(src, '')
+                src_val = item.get(src, None)
                 need_src_key = dest.get('need_src_key', False)
 
-                if need_src_key and not src_val:
+                if need_src_key and src_val is None:
                     continue
 
                 if not dest_name:
