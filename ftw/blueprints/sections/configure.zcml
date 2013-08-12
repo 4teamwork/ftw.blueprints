@@ -94,4 +94,10 @@
         name="ftw.blueprints.multilingual.linguaploneitemlinker"
         />
 
+  <utility
+      component=".simplelayoutsettings.SimplelayoutSettings"
+      name="ftw.blueprints.simplelayoutsetting"
+      />
+
+
 </configure>
