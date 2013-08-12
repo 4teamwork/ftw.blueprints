@@ -75,6 +75,9 @@ Blueprints provided by this package
     - Blueprint to convert the very old PloneFormMailer fields to the new
     PloneFormGen archetype fields
 
+- ftw.blueprints.contextualprtletadder
+    - Adds a portlet on a given context
+
 <!-- Under construction - deprecated -->
 
 - ftw.blueprints.annotatedefaultviewpathobjects
@@ -493,8 +496,45 @@ Full configuration
         'retract': 'intranet_secure_workflow--TRANSITION--retract'}
 
 
+ftw.blueprints.contextualportletadder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Blueprint to insert a portlet on a given context.
+
+Required options:
+
+- manager-name
+    - Name of the portletmanager you want to add a portlet
+    - String
+
+- assignment-path
+    - Dotted name path to the portlet assignment you want to add
+    - String
+
+- portlet-id
+    - ID of the portlet you want to add
+    - String
+
+Minimal configuration:
+
+.. code:: cfg
+
+    [contextualportletadder]
+    blueprint = ftw.blueprints.contextualportletadder
+    manager-name = plone.rightcolumn
+    assignment-path = ftw.contentpage.portlets.news_archive_portlet.Assignment
+    portlet-id = news_archive_portlet
+
+
+Optional options:
+
+- portlet-properties
+    - Default properties for the portlet assignment
+    - expression, dict
+
+
 ftw.blueprints.formmailer-fields-inserter
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Blueprint to convert the very old PloneFormMailer fields to the new
 PloneFormGen archetype fields
