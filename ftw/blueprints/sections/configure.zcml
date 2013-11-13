@@ -100,7 +100,7 @@
       />
 
   <utility
-      component=".sections.updater.PositionInParentUpdater"
+      component=".updater.PositionInParentUpdater"
       name="ftw.blueprints.positionupdater"
       />
 
