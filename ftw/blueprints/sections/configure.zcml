@@ -99,5 +99,9 @@
       name="ftw.blueprints.simplelayoutsetting"
       />
 
+  <utility
+      component=".sections.updater.PositionInParentUpdater"
+      name="ftw.blueprints.positionupdater"
+      />
 
 </configure>
