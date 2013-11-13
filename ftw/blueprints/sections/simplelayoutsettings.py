@@ -4,9 +4,7 @@ from simplelayout.base.interfaces import ISimpleLayoutBlock
 from simplelayout.base.interfaces import ISimpleLayoutCapable
 from simplelayout.base.interfaces import ISlotA
 from simplelayout.base.interfaces import ISlotB
-from collective.transmogrifier.utils import Expression
 from zope.interface import classProvides, implements
-import os
 from zope.interface import directlyProvides, noLongerProvides
 from simplelayout.base.interfaces import ISimplelayoutTwoColumnView
 from zope.annotation.interfaces import IAnnotations
@@ -24,7 +22,7 @@ class SimplelayoutSettings(object):
 
     def __iter__(self):
         for item in self.previous:
-            obj = self.context.restrictedTraverse(self.sitepath + item['_path'])
+            obj = self.context.restrictedTraverse('/'.join(self.context.getPhysicalPath()) + item['_path'])
             if ISimpleLayoutCapable.providedBy(obj):
                 if item['two_columns']:
                     directlyProvides(obj, ISimplelayoutTwoColumnView)
