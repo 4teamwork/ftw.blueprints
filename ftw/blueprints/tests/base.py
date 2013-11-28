@@ -11,6 +11,12 @@ class BlueprintTestCase(TestCase):
     klass = None
     input_data = None
 
+    def _get_expected(self, changes=None):
+        expected = self.input_data.copy()
+        if changes:
+            expected.update(changes)
+        return [expected]
+
     def test_implements_interface(self):
         # skip if not inherited
         if self.__class__ == BlueprintTestCase:

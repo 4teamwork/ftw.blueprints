@@ -11,6 +11,14 @@
       name="ftw.blueprints.regexreplacer"
       />
   <utility
+      component=".mapper.PathMapper"
+      name="ftw.blueprints.pathmapper"
+      />
+  <utility
+      component=".mapper.TypeFieldMapper"
+      name="ftw.blueprints.typefieldmapper"
+      />
+  <utility
       component=".logger.Logger"
       name="ftw.blueprints.logger"
       />

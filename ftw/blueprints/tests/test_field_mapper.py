@@ -16,12 +16,6 @@ class TestFieldMapper(BlueprintTestCase):
         self.klass = mapper.FieldMapper
         self.input_data = INPUT
 
-    def _get_expected(self, changes=None):
-        expected = INPUT.copy()
-        if changes:
-            expected.update(changes)
-        return [expected]
-
     def test_do_no_changes(self):
         expected = self._get_expected()
         self.assert_result({'field-mapping': "python:{}"}, expected)
