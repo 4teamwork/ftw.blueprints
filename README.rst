@@ -46,43 +46,42 @@ Blueprints provided by this package
 -----------------------------------
 
 - ftw.blueprints.fieldmapper
-    - Powerful blueprint to map and change fields from the given item
-      with a static value, lambda expressions, conditions and dict-mapping.
+   - Powerful blueprint to map and change fields from the given item
+     with a static value, lambda expressions, conditions and dict-mapping.
 
 - ftw.blueprints.childinserter
-    - Inserts a child for the given item
+   - Inserts a child for the given item
 
 - ftw.blueprints.parentinserter
-    - Inserts a parent for the given item
+   - Inserts a parent for the given item
 
 - ftw.blueprints.additionalobjectinserter
-    - Inserts an object at the given path
+   - Inserts an object at the given path
 
 - ftw.blueprints.dataupdater
-    - Updates blob data.
+   - Updates blob data.
 
 - ftw.blueprints.regexreplacer
-    - Replaces values with regex
+   - Replaces values with regex
 
 - ftw.blueprints.logger
-    - Alternate to the printer blueprint. Configurable logging blueprint to
-    log the information given in an expression.
+   - Alternate to the printer blueprint. Configurable logging blueprint to
+     log the information given in an expression.
 
 - ftw.blueprints.workflowmanager
-    - Manages the workflow states, transitions and history
+   - Manages the workflow states, transitions and history
 
 - ftw.blueprints.formmailer-fields-inserter
-    - Blueprint to convert the very old PloneFormMailer fields to the new
-    PloneFormGen archetype fields
+   - Blueprint to convert the very old PloneFormMailer fields to the new
+     PloneFormGen archetype fields
 
 - ftw.blueprints.contextualprtletadder
-    - Adds a portlet on a given context
+   - Adds a portlet on a given context
 
-<!-- Under construction - deprecated -->
-
-- ftw.blueprints.annotatedefaultviewpathobjects
-- ftw.blueprints.updatedefaultviewobjectpath
-- ftw.blueprints.checkisdefaultviewobject
+- Under construction / deprecated
+   - ftw.blueprints.annotatedefaultviewpathobjects
+   - ftw.blueprints.updatedefaultviewobjectpath
+   - ftw.blueprints.checkisdefaultviewobject
 
 ftw.blueprints.fieldmapper
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,19 +139,21 @@ mapper as a more powerful inserter blueprint. For example you can add
 an attribute to the item which does not exist yet. If the source-key does not
 exist on the item, it will be ignored by the mapper.
 
-.. code::
+.. code::  python
 
     {'update_show_title': {
         'destination': 'showTitle',
         'transform': lambda x: x['title'] and True or False,
-        },
+        }
     }
 
-    This example would set the non existing yet 'showTitle' attribute
-    on the item to True if the items title is not None.
+This example would set the non existing yet 'showTitle' attribute
+on the item to True if the items title is not None.
 
 Its also possible to do transforms on an attribute, after you can map it
 with the map_value option.
+
+.. code::  python
 
     {'title': {
         'destination': 'description',
@@ -161,27 +162,30 @@ with the map_value option.
         }
     }
 
-    First it transforms the title to lowercase. If the title contains one
-    of the given keys in the map_value option it will be replaced.
-    At the end, it put the transformed and mapped value into the description.
+First it transforms the title to lowercase. If the title contains one
+of the given keys in the map_value option it will be replaced.
+At the end, it put the transformed and mapped value into the description.
 
 You can combine all this options together to do powerful mappings
 on your item.
 
-	{
-    'zip': {'static_value':'3000'},
-    'client': {
-		'destination': 'text',
-        'transform': lambda x: x['language'] == \
-        'en' and 'Customer: %s' % (x['cleint']) or \
-        'Kunde: %s' % (x['client']),
-		'need_src_val': True}
+.. code::  python
+
+    {'zip': {'static_value':'3000'},
+     'client': {
+         'destination': 'text',
+         'transform': lambda x: x['language'] == \
+         'en' and 'Customer: %s' % (x['cleint']) or \
+         'Kunde: %s' % (x['client']),
+         'need_src_val': True
+       }
     }
-    First we put a static value to the zip attribute.
-    After we do some stuff with the client attribute. If the client-key
-    is available in the items-map, it fills a given
-    string, depending on the language of the object into the text
-    attribute.
+
+First we put a static value to the zip attribute.
+After we do some stuff with the client attribute. If the client-key
+is available in the items-map, it fills a given
+string, depending on the language of the object into the text
+attribute.
 
 
 Minimal configuration:
@@ -257,7 +261,7 @@ Full configuration
 .. code:: cfg
 
     [childinserter]
-    blueprint = ftw.blueprints.parentinserter
+    blueprint = ftw.blueprints.childinserter
     content-type = ContentPage
     additional-id = python: 'downloads'
     metadata-key = python: {
