@@ -35,6 +35,10 @@
       name="ftw.blueprints.checkisdefaultviewobject"
       />
   <utility
+      component=".encapsulator.UnicodeAwareMimeEncapsulator"
+      name="ftw.blueprints.unicodeawaremimeencapsulator"
+      />
+  <utility
       component=".inserter.ChildInserter"
       name="ftw.blueprints.childinserter"
       />
