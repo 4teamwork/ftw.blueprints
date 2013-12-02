@@ -49,6 +49,9 @@ Blueprints provided by this package
    - Powerful blueprint to map and change fields from the given item
      with a static value, lambda expressions, conditions and dict-mapping.
 
+- ftw.blueprints.pathmapper
+   - Map old paths to new paths
+
 - ftw.blueprints.childinserter
    - Inserts a child for the given item
 
@@ -75,8 +78,11 @@ Blueprints provided by this package
    - Blueprint to convert the very old PloneFormMailer fields to the new
      PloneFormGen archetype fields
 
-- ftw.blueprints.contextualprtletadder
+- ftw.blueprints.contextualportletadder
    - Adds a portlet on a given context
+
+- ftw.blueprints.unicodeawaremimeencapsulator
+   - Unicode aware plone.app.transmogrifier.mimeencapsulator.
 
 - Under construction / deprecated
    - ftw.blueprints.annotatedefaultviewpathobjects
@@ -199,6 +205,70 @@ Minimal configuration:
 Optional options:
 
 There are no optional options.
+
+ftw.blueprints.pathmapper
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This Blueprint updates the path for each item.
+
+Required options:
+
+- mapping
+
+  - An iterable of mappings.
+
+  - Each mapping-item is a tuple (regular_expression, replacement).
+
+  - The mappings are applied exhaustively in the defined order.
+
+  - expression, iterable
+
+Minimal configuration:
+
+.. code:: cfg
+
+    [pathmapper]
+    blueprint = ftw.blueprints.pathmapper
+    mapping = python: (
+        ('^/de/foo/bar', '/foo/bar'),
+        ('^/en/foo/bar', '/foo/qux'),)
+
+Optional options:
+
+- path-key
+  - The key-name for the path that is mapped. It defaults to _path.
+
+ftw.blueprints.typefieldmapper
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This Blueprint maps types and their fields to new types and new fields.
+
+Required options:
+
+- mapping
+
+  - Nested mapping for types and their fields.
+
+  - The first level maps types.
+
+  - The second levels maps fields of the first level's types.
+  
+  - expression, dict
+
+Minimal configuration:
+
+.. code:: cfg
+
+    [typefieldmapper]
+    blueprint = ftw.blueprints.typefieldmapper
+    mapping = python: {
+            'OldType':  ('NewType', {'oldfield': 'newfield'}),
+        }
+
+Optional options:
+
+- type-key
+  - The key-name for the type that is mapped. It defaults to _type.
 
 ftw.blueprints.childinserter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -561,6 +631,13 @@ Minimal configuration:
     [formmailer-fields-inserter]
     blueprint = ftw.blueprints.formmailer-fields-inserter
 
+
+ftw.blueprints.unicodeawaremimeencapsulator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Makes plone.app.transmogrifier.mimeencapsulator accept unicode input data. The
+configuration options don't change. See `transmogrifier documentation
+<https://pypi.python.org/pypi/plone.app.transmogrifier#mime-encapsulator-section>`_.
 
 Links
 -----
