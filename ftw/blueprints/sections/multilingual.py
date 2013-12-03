@@ -29,7 +29,7 @@ class LinguaPloneItemLinker(object):
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.portal = transmogrifier.context
+        self.context = transmogrifier.context
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
         self.canonicalkey = defaultMatcher(options, 'canonical-key', name,
                                            'canonicalTranslation')
@@ -37,11 +37,12 @@ class LinguaPloneItemLinker(object):
                                              'translationOf')
         self.uuid_generator = getUtility(IUUIDGenerator)
 
+        self.deferred = []
+
     def _traverse(self, path):
-        return self.portal.unrestrictedTraverse(path.lstrip('/'), None)
+        return self.context.unrestrictedTraverse(path.lstrip('/'), None)
 
     def __iter__(self):
-        deferred = []
         for item in self.previous:
             pathkey = self.pathkey(*item.keys())[0]
             if not pathkey:
@@ -52,7 +53,7 @@ class LinguaPloneItemLinker(object):
             if isinstance(path, unicode):
                 path = path.encode('ascii')
 
-            obj = self._traverse(path.lstrip('/'))
+            obj = self._traverse(path)
             if obj is None:
                 yield item
                 continue
@@ -60,24 +61,29 @@ class LinguaPloneItemLinker(object):
             canonicalkey = self.canonicalkey(*item.keys())[0]
             translationkey = self.translationkey(*item.keys())[0]
 
-            if canonicalkey:
-                canonicalpath = item[translationkey]
-                language = item['language']
-                if ITranslatable.providedBy(obj):
-                    ILanguage(obj).set_language(language)
+            if not canonicalkey:
+                continue
 
-                if item[canonicalkey]:
-                    IMutableTG(obj).set(self.uuid_generator())
-                    manager = ITranslationManager(obj)
-                    manager.register_translation(language, obj)
-                else:
-                    deferred.append((path, canonicalpath, language))
+            canonicalpath = item[translationkey]
+            language = item['language']
+            if ITranslatable.providedBy(obj):
+                ILanguage(obj).set_language(language)
 
-        for path, canonicalpath, language in deferred:
-            obj = self._traverse(path.lstrip('/'))
+            if item[canonicalkey]:
+                IMutableTG(obj).set(self.uuid_generator())
+                manager = ITranslationManager(obj)
+                manager.register_translation(language, obj)
+            else:
+                self.deferred.append((path, canonicalpath, language))
+
+        self._update_deferred()
+
+    def _update_deferred(self):
+        for path, canonicalpath, language in self.deferred:
+            obj = self._traverse(path)
             if obj is None:
                 continue
-            canonical = self._traverse(canonicalpath.lstrip('/'))
+            canonical = self._traverse(canonicalpath)
             if canonical is None:
                 continue
 

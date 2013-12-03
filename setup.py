@@ -4,11 +4,15 @@ import os
 version = '1.0.dev0'
 
 tests_require = [
-    'unittest2',
+    'ftw.builder',
     'ftw.testing',
-    'zope.configuration',
-    'plone.testing',
+    'plone.app.dexterity',
+    'plone.app.multilingual',
     'plone.app.testing',
+    'plone.multilingualbehavior',
+    'plone.testing',
+    'unittest2',
+    'zope.configuration',
     ]
 
 
