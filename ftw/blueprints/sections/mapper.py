@@ -2,6 +2,7 @@ from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import Condition
 from collective.transmogrifier.utils import Expression
+from collective.transmogrifier.utils import defaultMatcher
 from zope.interface import classProvides, implements
 import re
 
@@ -89,5 +90,76 @@ class FieldMapper(object):
                     src_val = map_value.get(src_val, src_val)
 
                 item[dest_name] = src_val
+
+            yield item
+
+
+class PathMapper(object):
+    """Maps old paths to new paths.
+
+    """
+    classProvides(ISectionBlueprint)
+    implements(ISection)
+
+    def __init__(self, transmogrifier, name, options, previous):
+        self.previous = previous
+        self.condition = Condition(options.get('condition', 'python:True'),
+                                   transmogrifier, name, options)
+        self.mapping = Expression(options['mapping'],
+                                  transmogrifier, name, options)
+        self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
+
+    def __iter__(self):
+        for item in self.previous:
+            keys = item.keys()
+            pathkey = self.pathkey(*keys)[0]
+
+            if not pathkey:
+                yield item
+                continue
+
+            path = item[pathkey]
+
+            if self.condition(item, key=path):
+                for pattern, repl in self.mapping(item):
+                    path = re.sub(pattern, repl, path)
+                item[pathkey] = path
+
+            yield item
+
+
+class TypeFieldMapper(object):
+    """Map types and their fields to new types and new fields.
+    """
+
+    classProvides(ISectionBlueprint)
+    implements(ISection)
+
+    def __init__(self, transmogrifier, name, options, previous):
+        self.previous = previous
+        self.mapping = Expression(options['mapping'],
+                                  transmogrifier, name, options)
+        self.typekey = defaultMatcher(options, 'type-key', name, 'type')
+
+    def __iter__(self):
+        for item in self.previous:
+            keys = item.keys()
+            typekey = self.typekey(*keys)[0]
+
+            if not typekey:
+                yield item
+                continue
+
+            old_type = item[typekey]
+            type_mappings = self.mapping(item)
+            if old_type in type_mappings:
+                new_type, field_mappings = type_mappings[old_type]
+                item[typekey] = new_type
+
+                for old_field, new_field in field_mappings.items():
+                    if old_field in keys:
+                        item[new_field] = item[old_field]
+                        if new_field != old_field:
+                            del item[old_field]
 
             yield item

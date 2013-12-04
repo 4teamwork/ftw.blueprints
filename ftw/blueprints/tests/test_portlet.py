@@ -10,6 +10,7 @@ class DummyAssignment(object):
 
 DUMMY_ASSIGNMENT_PATH = 'ftw.blueprints.tests.test_portlet.DummyAssignment'
 
+
 class TestPortletHandlerAssignmentObject(TestCase):
 
     def get_handler(self, path=DUMMY_ASSIGNMENT_PATH):

@@ -11,6 +11,14 @@
       name="ftw.blueprints.regexreplacer"
       />
   <utility
+      component=".mapper.PathMapper"
+      name="ftw.blueprints.pathmapper"
+      />
+  <utility
+      component=".mapper.TypeFieldMapper"
+      name="ftw.blueprints.typefieldmapper"
+      />
+  <utility
       component=".logger.Logger"
       name="ftw.blueprints.logger"
       />
@@ -25,6 +33,10 @@
   <utility
       component=".annotate.CheckIsDefaultViewObject"
       name="ftw.blueprints.checkisdefaultviewobject"
+      />
+  <utility
+      component=".encapsulator.UnicodeAwareMimeEncapsulator"
+      name="ftw.blueprints.unicodeawaremimeencapsulator"
       />
   <utility
       component=".inserter.ChildInserter"

@@ -1,9 +1,10 @@
 from ftw.blueprints.handlers import XMLHandler
 from ftw.blueprints.interfaces import IXMLHandler
 from unittest2 import TestCase
+from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 from zope.interface.verify import verifyClass
-from xml.dom import minidom
+
 
 TEST_XML = minidom.parseString("""
         <xml>
@@ -15,6 +16,7 @@ TEST_XML = minidom.parseString("""
             </asterix>
         </xml>
     """)
+
 
 class TestXMLHandlerClass(TestCase):
 
@@ -39,6 +41,7 @@ class TestParseXMLString(TestCase):
         xml = self.handler.parse_xml_string(u'<j\xe4mes></j\xe4mes>')
 
         self.assertIn(u'j\xe4mes', xml.firstChild.tagName)
+
     def test_functionality_with_utf_8(self):
 
         xml = self.handler.parse_xml_string(
@@ -94,7 +97,6 @@ class TestGetElementValue(TestCase):
         value = self.handler.get_element_value(xml, 'bond')
         self.assertEquals(u'Other \xe4gent', value)
 
-
     def test_empty_string_when_no_elements_with_value(self):
         value = self.handler.get_element_value(TEST_XML, 'austin')
         self.assertEquals('', value)
@@ -116,7 +118,6 @@ class TestGetElementAttribute(TestCase):
         value = self.handler.get_element_attribute_value(xml, 'bond', 'title')
 
         self.assertEquals('hero', value)
-
 
     def test_empty_string_when_attribute_doesnt_exist(self):
         value = self.handler.get_element_attribute_value(
