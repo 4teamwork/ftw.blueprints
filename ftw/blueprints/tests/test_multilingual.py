@@ -7,8 +7,8 @@ from ftw.builder import create
 from plone.app.testing import applyProfile
 from plone.app.testing.helpers import setRoles
 from plone.app.testing.interfaces import TEST_USER_ID
-from plone.multilingual.interfaces import ILanguage
 from plone.multilingual.interfaces import ITranslationManager
+from plone.multilingual.interfaces import ILanguage
 
 
 ITEMS = [{
