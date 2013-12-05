@@ -30,6 +30,32 @@ class TestPathMapper(BlueprintTestCase):
         )
         self.assert_result(options, expected)
 
+    def test_strip_prefixes(self):
+        input_data = self.input_data.copy()
+        input_data['_path'] = '/nininini' + input_data['_path']
+        expected = self._get_expected({'_path': '/qux/bar'})
+
+        options = self._get_options(
+            {'mapping': 'python:( ("^/foo", "/qux"), )',
+             'strip-prefixes': 'python: ["/nininini"]'}
+        )
+        self.assert_result(options, expected, input_data=input_data)
+
+    def test_recursive_strip_prefixes(self):
+        input_data = self.input_data.copy()
+        input_data['_refs'] = {'one': '/prefix/foo/bar',
+                               'two': '/prefix/foo/qux'}
+
+        expected = self._get_expected({'_refs': {'one': '/qux/bar',
+                                                 'two': '/qux/qux'}})
+
+        options = self._get_options({
+            'mapping': "python:( ('^/foo', '/qux'), )",
+            'strip-prefixes': 'python: ["/prefix"]',
+            'path-key': '_refs',
+        })
+        self.assert_result(options, expected, input_data=input_data)
+
     def test_map_order(self):
         expected = self._get_expected({'_path': '/qux/bar'})
 
