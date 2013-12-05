@@ -50,7 +50,7 @@ Blueprints provided by this package
      with a static value, lambda expressions, conditions and dict-mapping.
 
 - ftw.blueprints.pathmapper
-   - Map old paths to new paths
+   - Map old paths to new paths. Applies the mapping recursively if required.
 
 - ftw.blueprints.childinserter
    - Inserts a child for the given item
@@ -241,6 +241,24 @@ Optional options:
 
 - path-key
   - The key-name for the path that is mapped. It defaults to _path.
+
+- strip_prefixes
+  - A list of prefixes that are stripped from each path if the paths starts with
+  that prefix.
+
+Full configuration
+
+.. code:: cfg
+
+    [pathmapper]
+    blueprint = ftw.blueprints.pathmapper
+    mapping = python: (
+        ('^/de/foo/bar', '/foo/bar'),
+        ('^/en/foo/bar', '/foo/qux'),)
+    path-key = '_gak'
+    strip-prefixes = python: (
+      '/plone/www/irgendwo',)
+
 
 ftw.blueprints.typefieldmapper
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
