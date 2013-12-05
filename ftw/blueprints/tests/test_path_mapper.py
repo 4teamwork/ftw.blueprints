@@ -49,3 +49,15 @@ class TestPathMapper(BlueprintTestCase):
             'condition': 'python: False',
         })
         self.assert_result(options, expected)
+
+    def test_recursive_path_mapping(self):
+        input_data = self.input_data.copy()
+        input_data['_refs'] = ['/foo/bar', '/foo/qux']
+
+        expected = self._get_expected({'_refs': ['/qux/bar', '/qux/qux']})
+
+        options = self._get_options({
+            'mapping': "python:( ('^/foo', '/qux'), )",
+            'path-key': '_refs',
+        })
+        self.assert_result(options, expected, input_data=input_data)

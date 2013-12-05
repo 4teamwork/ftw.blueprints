@@ -109,6 +109,21 @@ class PathMapper(object):
                                   transmogrifier, name, options)
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
 
+    def _apply_mapping(self, item, path):
+        for pattern, repl in self.mapping(item):
+            path = re.sub(pattern, repl, path)
+        return path
+
+    def _apply_mapping_recursively(self, item, pathkey, path):
+        if isinstance(path, dict):
+            for key, value in path.items():
+                self._apply_mapping_recursively(path, key, value)
+        elif hasattr(path, '__iter__'):
+            item[pathkey] = tuple(self._apply_mapping(item, each) for each in
+                                  path)
+        else:
+            item[pathkey] = self._apply_mapping(item, path)
+
     def __iter__(self):
         for item in self.previous:
             keys = item.keys()
@@ -119,12 +134,11 @@ class PathMapper(object):
                 continue
 
             path = item[pathkey]
+            if not self.condition(item, key=path):
+                yield item
+                continue
 
-            if self.condition(item, key=path):
-                for pattern, repl in self.mapping(item):
-                    path = re.sub(pattern, repl, path)
-                item[pathkey] = path
-
+            self._apply_mapping_recursively(item, path, pathkey)
             yield item
 
 
