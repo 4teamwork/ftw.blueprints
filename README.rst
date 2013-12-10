@@ -84,6 +84,10 @@ Blueprints provided by this package
 - ftw.blueprints.unicodeawaremimeencapsulator
    - Unicode aware plone.app.transmogrifier.mimeencapsulator.
 
+- ftw.blueprints.multilingual.linguaploneitemlinker
+   - Create new translations with plone.app.multilingual from a source that used
+     LinguaPlone.
+
 - Under construction / deprecated
    - ftw.blueprints.annotatedefaultviewpathobjects
    - ftw.blueprints.updatedefaultviewobjectpath
@@ -638,6 +642,38 @@ ftw.blueprints.unicodeawaremimeencapsulator
 Makes plone.app.transmogrifier.mimeencapsulator accept unicode input data. The
 configuration options don't change. See `transmogrifier documentation
 <https://pypi.python.org/pypi/plone.app.transmogrifier#mime-encapsulator-section>`_.
+
+
+ftw.blueprints.multilingual.linguaploneitemlinker
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Links translations in the new Plone site with plone.app.multilingual. Expects
+that the source has been translated with LinguaPlone. Furthermore expects that
+Plone content in the new site has already been constructed when this section
+runs.
+
+Note that when you are mapping paths you should also apply the same mapping to
+the reference to the canonical translation (_translationOf).
+
+Minimal configuration:
+
+.. code:: cfg
+
+    [multilingual]
+    blueprint = ftw.blueprints.multilingual.linguaploneitemlinker
+
+Optional options:
+
+- path-key
+  - The key-name for the new item's path. It defaults to _path.
+
+- canonical-key
+  - The key-name for the boolean that indicates whether this item is a canonical
+  translation. It defaults to _canonicalTranslation.
+
+- translationOf
+  - The key-name for the reference to the canonical translation. It defaults to
+  _translationOf.
 
 Links
 -----

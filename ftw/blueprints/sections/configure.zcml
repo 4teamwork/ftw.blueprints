@@ -66,4 +66,8 @@
       component=".portlet.ContextualPortletAdder"
       name="ftw.blueprints.ContextualPortletAdder"
       />
+  <utility
+      component=".multilingual.LinguaPloneItemLinker"
+      name="ftw.blueprints.multilingual.linguaploneitemlinker"
+      />
 </configure>
