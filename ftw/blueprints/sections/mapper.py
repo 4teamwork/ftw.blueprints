@@ -97,6 +97,12 @@ class FieldMapper(object):
 class PathMapper(object):
     """Maps old paths to new paths.
 
+    Applices recursive mapping if the path at pathkey is a dict. Applies
+    mapping for each element if path at pathkey is another iterable.
+
+    All prefixes configured in strip_prefixes will be removed from the
+    path.
+
     """
     classProvides(ISectionBlueprint)
     implements(ISection)
@@ -105,9 +111,33 @@ class PathMapper(object):
         self.previous = previous
         self.condition = Condition(options.get('condition', 'python:True'),
                                    transmogrifier, name, options)
+        self.strip_prefixes = Expression(options.get('strip-prefixes',
+                                                     'python: []'),
+                                         transmogrifier, name, options)
         self.mapping = Expression(options['mapping'],
                                   transmogrifier, name, options)
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
+
+    def _apply_mapping(self, strip_prefixes, mapping, path):
+        for each in strip_prefixes:
+            if path.startswith(each):
+                path = path.replace(each, '', 1)
+        for pattern, repl in mapping:
+            path = re.sub(pattern, repl, path)
+        return path
+
+    def _apply_mapping_recursively(self, strip_prefixes, mapping,
+                                   item, pathkey, path):
+        if isinstance(path, dict):
+            for key, value in path.items():
+                self._apply_mapping_recursively(strip_prefixes, mapping,
+                                                path, key, value)
+        elif hasattr(path, '__iter__'):
+            item[pathkey] = list(self._apply_mapping(strip_prefixes,
+                                                     mapping,  each)
+                                 for each in path)
+        else:
+            item[pathkey] = self._apply_mapping(strip_prefixes, mapping, path)
 
     def __iter__(self):
         for item in self.previous:
@@ -119,12 +149,14 @@ class PathMapper(object):
                 continue
 
             path = item[pathkey]
+            if not self.condition(item, key=path):
+                yield item
+                continue
 
-            if self.condition(item, key=path):
-                for pattern, repl in self.mapping(item):
-                    path = re.sub(pattern, repl, path)
-                item[pathkey] = path
-
+            mapping = self.mapping(item)
+            strip_prefixes = self.strip_prefixes(item)
+            self._apply_mapping_recursively(strip_prefixes, mapping,
+                                            item, pathkey, path)
             yield item
 
 
