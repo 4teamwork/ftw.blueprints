@@ -144,7 +144,7 @@ Using field-mapping:
 
     It would just set the static value if the source-key exists on the item.
 
-The option 'need_src_val' is per default on False. So you can use the
+The option 'need_src_key' defaults to False. So you can use the
 mapper as a more powerful inserter blueprint. For example you can add
 an attribute to the item which does not exist yet. If the source-key does not
 exist on the item, it will be ignored by the mapper.
@@ -187,7 +187,7 @@ on your item.
          'transform': lambda x: x['language'] == \
          'en' and 'Customer: %s' % (x['cleint']) or \
          'Kunde: %s' % (x['client']),
-         'need_src_val': True
+         'need_src_key': True
        }
     }
 
