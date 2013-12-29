@@ -134,7 +134,7 @@ class PathMapper(object):
                                                 path, key, value)
         elif hasattr(path, '__iter__'):
             item[pathkey] = list(self._apply_mapping(strip_prefixes,
-                                                     mapping,  each)
+                                                     mapping, each)
                                  for each in path)
         else:
             item[pathkey] = self._apply_mapping(strip_prefixes, mapping, path)
