@@ -2,72 +2,89 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier">
 
-  <utility
-      component=".mapper.FieldMapper"
-      name="ftw.blueprints.fieldmapper"
-      />
-  <utility
-      component=".mapper.RegexReplacer"
-      name="ftw.blueprints.regexreplacer"
-      />
-  <utility
-      component=".mapper.PathMapper"
-      name="ftw.blueprints.pathmapper"
-      />
-  <utility
-      component=".mapper.TypeFieldMapper"
-      name="ftw.blueprints.typefieldmapper"
-      />
-  <utility
-      component=".logger.Logger"
-      name="ftw.blueprints.logger"
-      />
-  <utility
-      component=".annotate.AnnotateDefaultViewPathObjects"
-      name="ftw.blueprints.annotatedefaultviewpathobjects"
-      />
-  <utility
-      component=".annotate.UpdateDefaultViewObjectPath"
-      name="ftw.blueprints.updatedefaultviewobjectpath"
-      />
-  <utility
-      component=".annotate.CheckIsDefaultViewObject"
-      name="ftw.blueprints.checkisdefaultviewobject"
-      />
-  <utility
-      component=".encapsulator.UnicodeAwareMimeEncapsulator"
-      name="ftw.blueprints.unicodeawaremimeencapsulator"
-      />
-  <utility
-      component=".inserter.ChildInserter"
-      name="ftw.blueprints.childinserter"
-      />
-  <utility
-      component=".inserter.ParentInserter"
-      name="ftw.blueprints.parentinserter"
-      />
-  <utility
-      component=".inserter.AdditionalObjectInserter"
-      name="ftw.blueprints.additionalobjectinserter"
-      />
-  <utility
-      component=".updater.DataUpdater"
-      name="ftw.blueprints.dataupdater"
-      />
-  <utility
-      component=".pfm2pfg.FormMailerFieldsInserter"
-      name="ftw.blueprints.formmailer-fields-inserter"
-      />
-  <utility
-      component=".workflow.WorkflowManager"
-      name="ftw.blueprints.workflowmanager"
-      />
-  <utility
-      component=".portlet.ContextualPortletAdder"
-      name="ftw.blueprints.ContextualPortletAdder"
-      />
-  <utility
-      component=".multilingual.LinguaPloneItemLinker"
-      name="ftw.blueprints.multilingual.linguaploneitemlinker"
-      />
+    <utility
+        component=".mapper.FieldMapper"
+        name="ftw.blueprints.fieldmapper"
+        />
+
+    <utility
+        component=".mapper.RegexReplacer"
+        name="ftw.blueprints.regexreplacer"
+        />
+
+    <utility
+        component=".mapper.PathMapper"
+        name="ftw.blueprints.pathmapper"
+        />
+
+    <utility
+        component=".mapper.TypeFieldMapper"
+        name="ftw.blueprints.typefieldmapper"
+        />
+
+    <utility
+        component=".logger.Logger"
+        name="ftw.blueprints.logger"
+        />
+
+    <utility
+        component=".annotate.AnnotateDefaultViewPathObjects"
+        name="ftw.blueprints.annotatedefaultviewpathobjects"
+        />
+
+    <utility
+        component=".annotate.UpdateDefaultViewObjectPath"
+        name="ftw.blueprints.updatedefaultviewobjectpath"
+        />
+
+    <utility
+        component=".annotate.CheckIsDefaultViewObject"
+        name="ftw.blueprints.checkisdefaultviewobject"
+        />
+
+    <utility
+        component=".encapsulator.UnicodeAwareMimeEncapsulator"
+        name="ftw.blueprints.unicodeawaremimeencapsulator"
+        />
+
+    <utility
+        component=".inserter.ChildInserter"
+        name="ftw.blueprints.childinserter"
+        />
+
+    <utility
+        component=".inserter.ParentInserter"
+        name="ftw.blueprints.parentinserter"
+        />
+
+    <utility
+        component=".inserter.AdditionalObjectInserter"
+        name="ftw.blueprints.additionalobjectinserter"
+        />
+
+    <utility
+        component=".updater.DataUpdater"
+        name="ftw.blueprints.dataupdater"
+        />
+
+    <utility
+        component=".pfm2pfg.FormMailerFieldsInserter"
+        name="ftw.blueprints.formmailer-fields-inserter"
+        />
+
+    <utility
+        component=".workflow.WorkflowManager"
+        name="ftw.blueprints.workflowmanager"
+        />
+
+    <utility
+        component=".portlet.ContextualPortletAdder"
+        name="ftw.blueprints.ContextualPortletAdder"
+        />
+
+    <utility
+        component=".multilingual.LinguaPloneItemLinker"
+        name="ftw.blueprints.multilingual.linguaploneitemlinker"
+        />
+
 </configure>

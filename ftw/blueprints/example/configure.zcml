@@ -23,4 +23,5 @@
         description="can be used to migrate the PloneFormMailer to PloneFormGen"
         configuration="pfm2pfg.cfg"
         />
+
 </configure>
