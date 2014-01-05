@@ -297,7 +297,7 @@ ftw.blueprints.childinserter
 
 This Blueprint inserts a new item to the pipline as a child.
 
-THe new item is not a copy of the parent-item. If you want to use metadata
+The new item is not a copy of the parent-item. If you want to use metadata
 of the parent-item, you need to map them with the metadata-key option
 
 Required options:
@@ -329,14 +329,14 @@ Optional options:
 
   Using parents metadata:
 
-    {'description', 'title'}
+    {'description': 'title'}
 
     will get the value of title on parent-item and put it into the description
     field on child-item
 
   Using new value:
 
-    {'title', lambda x: 'Images'}
+    {'title': lambda x: 'Images'}
 
     will put 'Images' into the title field on child-item
 
@@ -357,8 +357,8 @@ Full configuration
     content-type = ContentPage
     additional-id = python: 'downloads'
     metadata-key = python: {
-        'title', lambda x: 'Images',
-        'description', 'title',
+        'title': lambda x: 'Images',
+        'description': 'title',
         }
     _interfaces = python: [
         "simplelayout.portlet.dropzone.interfaces.ISlotBlock",
