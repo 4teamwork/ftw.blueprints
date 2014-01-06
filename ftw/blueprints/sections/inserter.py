@@ -70,7 +70,7 @@ class ObjectInserter(object):
         return additional_item
 
     def extend_metadata(self, item, additional_item, metadata):
-        """Extends the new item with additinoal metadata
+        """Extends the new item with additional metadata
         """
 
         for key, value_key in metadata.items():
