@@ -62,19 +62,20 @@ class LinguaPloneItemLinker(object):
             translationkey = self.translationkey(*item.keys())[0]
 
             if not canonicalkey:
+                yield item
                 continue
 
             canonicalpath = item[translationkey]
             language = item['language']
             if ITranslatable.providedBy(obj):
                 ILanguage(obj).set_language(language)
-
             if item[canonicalkey]:
                 IMutableTG(obj).set(self.uuid_generator())
                 manager = ITranslationManager(obj)
                 manager.register_translation(language, obj)
             else:
                 self.deferred.append((path, canonicalpath, language))
+            yield item
 
         self._update_deferred()
 
