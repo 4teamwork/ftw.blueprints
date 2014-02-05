@@ -90,8 +90,12 @@ class LinguaPloneItemLinker(object):
 
             if (ITranslatable.providedBy(obj) and
                     ITranslatable.providedBy(canonical)):
-                translation_group = IMutableTG(canonical).get()
-                IMutableTG(obj).set(translation_group)
-
-                manager = ITranslationManager(obj)
-                manager.register_translation(language, obj)
+                try:
+                    translation_group = IMutableTG(canonical).get()
+                    IMutableTG(obj).set(translation_group)
+                    manager = ITranslationManager(obj)
+                    manager.register_translation(language, obj)
+                except KeyError:
+                    # put obj in a separate translation group when registration
+                    # fails
+                    IMutableTG(obj).set(self.uuid_generator())

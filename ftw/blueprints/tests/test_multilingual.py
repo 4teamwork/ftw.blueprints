@@ -9,6 +9,7 @@ from plone.app.testing.helpers import setRoles
 from plone.app.testing.interfaces import TEST_USER_ID
 from plone.multilingual.interfaces import ITranslationManager
 from plone.multilingual.interfaces import ILanguage
+from copy import deepcopy
 
 
 ITEMS = [{
@@ -47,8 +48,8 @@ class TestMultilingual(BlueprintTestCase):
 
         applyProfile(self.portal, 'plone.app.multilingual:default')
 
+        self.items = deepcopy(ITEMS)
         self._setup_content()
-        self._run_transmogrifier()
 
     def _setup_content(self):
         self.folder_de = create(Builder('folder').titled('de'))
@@ -66,10 +67,39 @@ class TestMultilingual(BlueprintTestCase):
         transmogrifier.context = self.portal
         options = {'blueprint':
                    'ftw.blueprints.linguaploneitemtranslationlinker'}
-        source = self.klass(transmogrifier, 'test', options, ITEMS)
-        list(source)
+        source = self.klass(transmogrifier, 'test', options, self.items)
+        return list(source)
+
+    def test_duplicate_translations_are_discarded_when_linking(self):
+        folder_uhoh = create(Builder('folder').titled('uhoh'))
+
+        self.items = self.items[:2]
+        self.items.append({
+            '_path': '/uhoh',
+            '_canonicalTranslation': False,
+            '_translationOf': '/de',
+            'language': 'en',
+        })
+        items = self._run_transmogrifier()
+        self.assertEqual(3, len(items))
+
+        uhoh_manager = ITranslationManager(folder_uhoh)
+        manager = ITranslationManager(self.folder_en)
+        uhoh_manager.update()
+        manager.update()
+
+        self.assertEqual('en', ILanguage(folder_uhoh).get_language())
+        self.assertEqual(1, len(uhoh_manager.get_translated_languages()))
+
+        languages = manager.get_translated_languages()
+        self.assertEqual(2, len(languages))
+        self.assertIn('de', languages)
+        self.assertIn('en', languages)
 
     def test_language_is_set(self):
+        items = self._run_transmogrifier()
+        self.assertEqual(4, len(items))
+
         self.assertEqual('de', ILanguage(self.folder_de).get_language())
         self.assertEqual('en', ILanguage(self.folder_en).get_language())
 
@@ -77,6 +107,9 @@ class TestMultilingual(BlueprintTestCase):
         self.assertEqual('en', ILanguage(self.file_en).get_language())
 
     def test_content_is_linked(self):
+        items = self._run_transmogrifier()
+        self.assertEqual(4, len(items))
+
         manager = ITranslationManager(self.folder_en)
         self.assertEqual(self.folder_de, manager.get_translation('de'),
                           'English and German content should be linked.')
