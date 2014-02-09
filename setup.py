@@ -43,7 +43,6 @@ setup(name='ftw.blueprints',
           'setuptools',
           'collective.jsonmigrator',
           'collective.transmogrifier >= 1.5',
-          'collective.blueprint.translationlinker',
           'ftw.inflator',
           # -*- Extra requirements: -*-
       ],
