@@ -42,7 +42,9 @@ setup(name='ftw.blueprints',
       install_requires=[
           'setuptools',
           'collective.jsonmigrator',
+          'collective.blueprint.jsonmigrator',
           'collective.transmogrifier >= 1.5',
+          'transmogrify.dexterity',
           'ftw.inflator',
           # -*- Extra requirements: -*-
       ],
