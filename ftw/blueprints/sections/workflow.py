@@ -103,7 +103,8 @@ class WorkflowManager(object):
             yield item
 
     def set_workflow_on_obj(self, obj, workflow_history):
-        obj.workflow_history.data = workflow_history
+        obj.workflow_history.clear()
+        obj.workflow_history.update(workflow_history)
         workflows = self.wftool.getWorkflowsFor(obj)
         if workflows:
             workflows[0].updateRoleMappingsFor(obj)
