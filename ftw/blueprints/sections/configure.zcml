@@ -94,14 +94,15 @@
         name="ftw.blueprints.multilingual.linguaploneitemlinker"
         />
 
-  <utility
-      component=".simplelayoutsettings.SimplelayoutSettings"
-      name="ftw.blueprints.simplelayoutsetting"
-      />
+    <utility
+        zcml:condition="installed simplelayout.base"
+        component=".simplelayoutsettings.SimplelayoutSettings"
+        name="ftw.blueprints.simplelayoutsetting"
+        />
 
-  <utility
-      component=".updater.PositionInParentUpdater"
-      name="ftw.blueprints.positionupdater"
-      />
+    <utility
+        component=".updater.PositionInParentUpdater"
+        name="ftw.blueprints.positionupdater"
+        />
 
 </configure>
