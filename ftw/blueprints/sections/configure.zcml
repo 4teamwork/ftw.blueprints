@@ -100,9 +100,4 @@
         name="ftw.blueprints.simplelayoutsetting"
         />
 
-    <utility
-        component=".updater.PositionInParentUpdater"
-        name="ftw.blueprints.positionupdater"
-        />
-
 </configure>
