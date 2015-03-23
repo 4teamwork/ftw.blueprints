@@ -84,6 +84,11 @@
         />
 
     <utility
+        component=".position.PositionInParentUpdater"
+        name="ftw.blueprints.positionupdater"
+        />
+
+    <utility
         zcml:condition="installed plone.multilingual"
         component=".multilingual.LinguaPloneItemLinker"
         name="ftw.blueprints.multilingual.linguaploneitemlinker"

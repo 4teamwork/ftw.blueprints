@@ -88,6 +88,9 @@ Blueprints provided by this package
    - Create new translations with plone.app.multilingual from a source that used
      LinguaPlone.
 
+- ftw.blueprints.positionupdater
+   - A object position in parent blueprint, supporting Plone sites.
+
 - Under construction / deprecated
    - ftw.blueprints.annotatedefaultviewpathobjects
    - ftw.blueprints.updatedefaultviewobjectpath
@@ -274,7 +277,7 @@ Required options:
   - The first level maps types.
 
   - The second levels maps fields of the first level's types.
-  
+
   - expression, dict
 
 Minimal configuration:
@@ -692,6 +695,29 @@ Optional options:
 - translationOf
   - The key-name for the reference to the canonical translation. It defaults to
   _translationOf.
+
+
+ftw.blueprints.positionupdater
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``positionupdater`` blueprint supports folders and Plone sites.
+It stores the desired position of each object in its annotations,
+so that we can migrate children separately but keep the position
+(e.g. one FTI at a time).
+
+.. code:: cfg
+
+    [position]
+    blueprint = ftw.blueprints.positionupdater
+
+Optional:
+
+- ``path-key``
+  - The key-name for the new item's path. It defaults to ``_path``.
+
+- ``position-key``
+  - The key-name for the item's position. It defaults to ``_gopip``.
+
 
 Links
 -----
