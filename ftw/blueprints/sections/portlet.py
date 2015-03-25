@@ -1,16 +1,20 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import Condition
-from collective.transmogrifier.utils import Expression
 from collective.transmogrifier.utils import traverse
 from importlib import import_module
+from plone.portlets.constants import CONTENT_TYPE_CATEGORY
+from plone.portlets.constants import CONTEXT_CATEGORY
+from plone.portlets.constants import GROUP_CATEGORY
+from plone.portlets.constants import USER_CATEGORY
+from plone.portlets.interfaces import ILocalPortletAssignmentManager
 from plone.portlets.interfaces import IPortletAssignmentMapping
 from plone.portlets.interfaces import IPortletManager
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+from zope.dottedname.resolve import resolve
 from zope.interface import classProvides, implements
 import logging
-from zope.dottedname.resolve import resolve
 
 class PortletHandler(object):
 
@@ -90,3 +94,11 @@ class ContextualPortletAdder(object):
 
             self.logger.info(
                 "Added portlet at %s" % (item[self.pathkey]))
+
+        for managername, blacklist in item['portlet_blacklists'].items():
+            manager = getUtility(IPortletManager, name=managername, context=obj)
+            assignment_manager = getMultiAdapter((obj, manager),
+                                                 ILocalPortletAssignmentManager)
+            for category in (CONTENT_TYPE_CATEGORY, CONTEXT_CATEGORY, GROUP_CATEGORY,
+                             USER_CATEGORY):
+                assignment_manager.setBlacklistStatus(category, blacklist.get(category))
