@@ -722,8 +722,8 @@ Optional:
 Links
 -----
 
-- Main github project repository: https://github.com/4teamwork/ftw.blueprints
-- Issue tracker: https://github.com/4teamwork/ftw.blueprints/issues
+- Github: https://github.com/4teamwork/ftw.blueprints
+- Issues: https://github.com/4teamwork/ftw.blueprints/issues
 - Continuous integration: https://jenkins.4teamwork.ch/search?q=ftw.blueprints
 
 
