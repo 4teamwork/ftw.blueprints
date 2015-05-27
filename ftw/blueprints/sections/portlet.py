@@ -86,17 +86,24 @@ class ContextualPortletAdder(object):
 
             if not obj:
                 self.logger.warn(
-                    "Context does not exist at %s" % item.get[self.pathkey])
+                    "Context does not exist at %s" % item.get(self.pathkey))
                 yield item
                 continue
             for portlet in item['portlets']:
-                self.portlet_handler(obj, portlet)
+                try:
+                    self.portlet_handler(obj, portlet)
+                except ImportError as e:
+                    # class does not exists on new site -> skip
+                    self.logger.warn("Can't import portlet: %s" % e.message)
+                    continue
 
             self.logger.info(
                 "Added portlet at %s" % (item[self.pathkey]))
 
         for managername, blacklist in item['portlet_blacklists'].items():
             manager = getUtility(IPortletManager, name=managername, context=obj)
+            if not manager or not obj:
+                continue
             assignment_manager = getMultiAdapter((obj, manager),
                                                  ILocalPortletAssignmentManager)
             for category in (CONTENT_TYPE_CATEGORY, CONTEXT_CATEGORY, GROUP_CATEGORY,
