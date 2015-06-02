@@ -48,6 +48,51 @@ def map_workflow(old_workflow_id, new_workflow_id,
     return new_workflow
 
 
+class PlacefulWorkflowImporter(object):
+    classProvides(ISectionBlueprint)
+    implements(ISection)
+
+    def __init__(self, transmogrifier, name, options, previous):
+        self.previous = previous
+        self.context = transmogrifier.context
+        self.pathkey = options.get('path-key', '_path')
+        self.policy_mapping = Expression(
+            options.get('policy-mapping', 'python:{}'),
+            transmogrifier, name, options)
+
+    def __iter__(self):
+        for item in self.previous:
+            if hasattr(self, 'condition') and not self.condition(item):
+                yield item
+                continue
+
+            obj = traverse(self.context, item.get(self.pathkey, ''))
+            if not obj or not IBaseObject.providedBy(obj) or \
+                    '_placeful_workflow_config' not in item:
+                yield item
+                continue
+
+            plc_workflow = getToolByName(obj, 'portal_placeful_workflow')
+            config = plc_workflow.getWorkflowPolicyConfig(obj)
+
+            if not config:
+                obj.manage_addProduct[
+                    'CMFPlacefulWorkflow'].manage_addWorkflowPolicyConfig()
+                config = plc_workflow.getWorkflowPolicyConfig(obj)
+
+            mapping = self.policy_mapping(item)
+            policy_in = item['_placeful_workflow_config'][0]
+            policy_below = item['_placeful_workflow_config'][1]
+
+            config.setPolicyIn(policy=mapping.get(policy_in, policy_in))
+            config.setPolicyBelow(
+                policy=mapping.get(policy_below, policy_below),
+                update_security=True)
+            obj.update()
+
+            yield item
+
+
 class WorkflowManager(object):
     classProvides(ISectionBlueprint)
     implements(ISection)
