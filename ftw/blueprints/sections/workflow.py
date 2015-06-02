@@ -9,11 +9,8 @@ from Products.CMFCore.utils import getToolByName
 from zope.interface import classProvides, implements
 
 
-def map_workflow(old_workflow_id, new_workflow_id,
-    workflow_history,
-    state_map={},
-    transition_map={},
-    update_history=True):
+def map_workflow(old_workflow_id, new_workflow_id, workflow_history,
+                 state_map={}, transition_map={}, update_history=True):
 
     old_workflow = workflow_history.get(old_workflow_id, [])
 
@@ -119,18 +116,27 @@ class WorkflowManager(object):
             options.get('transition-map', 'python:{}'),
             transmogrifier, name, options)
 
-        self.condition = Condition(options.get('condition', 'python:True'),
+        self.condition = Condition(
+            options.get('condition', 'python:True'),
             transmogrifier, name, options)
 
     def __iter__(self):
         for item in self.previous:
-            if not self.condition(item):
+            obj = traverse(self.context, item.get(self.pathkey, ''))
+            if not self.condition(item) or not obj or not \
+                    IBaseObject.providedBy(obj):
                 yield item
                 continue
 
-            obj = traverse(self.context, item.get(self.pathkey, ''))
-            if not obj or not IBaseObject.providedBy(obj) or not hasattr(
-                obj, 'workflow_history'):
+            if not hasattr(obj, 'workflow_history'):
+                yield item
+                continue
+
+            workflows = getToolByName(obj,
+                                      "portal_workflow").getWorkflowsFor(obj)
+            # check if the target workflow fits
+            if len(workflows) != 1 or \
+                    workflows[0].getId() != self.new_workflow_id:
                 yield item
                 continue
 
