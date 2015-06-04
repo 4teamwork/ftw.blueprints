@@ -74,6 +74,11 @@
         />
 
     <utility
+        component=".workflow.PlacefulWorkflowImporter"
+        name="ftw.blueprints.placefulworkflowimporter"
+        />
+
+    <utility
         component=".workflow.WorkflowManager"
         name="ftw.blueprints.workflowmanager"
         />

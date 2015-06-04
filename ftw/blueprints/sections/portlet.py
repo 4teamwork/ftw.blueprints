@@ -100,12 +100,14 @@ class ContextualPortletAdder(object):
             self.logger.info(
                 "Added portlet at %s" % (item[self.pathkey]))
 
-        for managername, blacklist in item['portlet_blacklists'].items():
-            manager = getUtility(IPortletManager, name=managername, context=obj)
-            if not manager or not obj:
-                continue
-            assignment_manager = getMultiAdapter((obj, manager),
-                                                 ILocalPortletAssignmentManager)
-            for category in (CONTENT_TYPE_CATEGORY, CONTEXT_CATEGORY, GROUP_CATEGORY,
-                             USER_CATEGORY):
-                assignment_manager.setBlacklistStatus(category, blacklist.get(category))
+            for managername, blacklist in item['portlet_blacklists'].items():
+                manager = getUtility(IPortletManager, name=managername, context=obj)
+                if not manager or not obj:
+                    continue
+                assignment_manager = getMultiAdapter((obj, manager),
+                                                     ILocalPortletAssignmentManager)
+                for category in (CONTENT_TYPE_CATEGORY, CONTEXT_CATEGORY, GROUP_CATEGORY,
+                                 USER_CATEGORY):
+                    assignment_manager.setBlacklistStatus(category, blacklist.get(category))
+
+            yield item
