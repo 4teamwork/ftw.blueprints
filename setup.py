@@ -46,6 +46,7 @@ setup(name='ftw.blueprints',
           'collective.transmogrifier >= 1.5',
           'transmogrify.dexterity',
           'ftw.inflator',
+          'Products.CMFPlacefulWorkflow',
           # -*- Extra requirements: -*-
       ],
 

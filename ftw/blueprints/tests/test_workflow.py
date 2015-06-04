@@ -1,6 +1,15 @@
-from ftw.blueprints.sections.workflow import map_workflow
-from unittest2 import TestCase
 from DateTime import DateTime
+from ftw.blueprints.sections.workflow import map_workflow
+from ftw.blueprints.sections.workflow import PlacefulWorkflowImporter
+from ftw.blueprints.testing import BLUEPRINT_FUNCTIONAL_TESTING
+from ftw.blueprints.tests.base import BlueprintTestCase
+from ftw.blueprints.tests.utils import TestTransmogrifier
+from ftw.builder import Builder
+from ftw.builder import create
+from plone.app.testing.helpers import setRoles
+from plone.app.testing.interfaces import TEST_USER_ID
+from Products.CMFCore.utils import getToolByName
+from unittest2 import TestCase
 
 
 WORKFLOW_HISTORY = {'test-workflow':[
@@ -73,3 +82,33 @@ class TestMapWorkflow(TestCase):
             WORKFLOW_HISTORY, )
 
         self.assertEquals(workflow, None)
+
+
+class TestPlacefulWorklfow(BlueprintTestCase):
+    layer = BLUEPRINT_FUNCTIONAL_TESTING
+    klass = PlacefulWorkflowImporter
+
+    def setUp(self):
+        super(TestPlacefulWorklfow, self).setUp()
+        self.portal = self.layer['portal']
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+
+    def test_placeful_workfow_is_applied(self):
+        obj = create(Builder('folder').titled('folder'))
+
+        self.run_transmogrifier([{'_path': 'folder',
+                                  '_placeful_workflow_config':
+                                  ['test_in', 'test_below']}])
+
+        plc_workflow = getToolByName(obj, 'portal_placeful_workflow')
+        config = plc_workflow.getWorkflowPolicyConfig(obj)
+
+        self.assertEquals('test_in', config.workflow_policy_in)
+        self.assertEquals('test_below', config.workflow_policy_below)
+
+    def run_transmogrifier(self, items):
+        transmogrifier = TestTransmogrifier()
+        transmogrifier.context = self.portal
+        options = {'blueprint': 'ftw.blueprints.placefulworkflowimporter'}
+        source = self.klass(transmogrifier, 'test', options, items)
+        return list(source)
