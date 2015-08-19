@@ -45,7 +45,8 @@ class PositionInParentUpdater(object):
         have stored the position from the source installation.
         """
 
-        self.store_position_for_obj(obj, position)
+        if position is not None:
+            self.store_position_for_obj(obj, position)
         parent = aq_parent(aq_inner(obj))
         self.reorder_children(parent)
 
