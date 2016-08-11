@@ -5,6 +5,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+- Update imports to work with both Plone 4 and Plone 5
+  [Guido A.J. Stevens]
+
 - Update imports to work with Plone 5
   [erral]
 
