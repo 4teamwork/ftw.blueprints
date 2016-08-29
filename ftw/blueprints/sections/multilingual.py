@@ -2,7 +2,6 @@ from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
 from plone.uuid.interfaces import IUUIDGenerator
-from Products.CMFPlone.interfaces import ILanguage
 from Products.CMFPlone.utils import getFSVersionTuple
 from zope.component import getUtility
 from zope.interface import classProvides
@@ -14,8 +13,11 @@ if getFSVersionTuple() >= (5,):
     from plone.app.multilingual.interfaces import IMutableTG
     from plone.app.multilingual.interfaces import ITranslatable
     from plone.app.multilingual.interfaces import ITranslationManager
+    from Products.CMFPlone.interfaces import ILanguage
+
 else:
     # Plone <= 4
+    from plone.multilingual.interfaces import ILanguage
     from plone.multilingual.interfaces import IMutableTG
     from plone.multilingual.interfaces import ITranslatable
     from plone.multilingual.interfaces import ITranslationManager

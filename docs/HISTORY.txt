@@ -5,10 +5,13 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+- Make ILanguage import conditional so it works for both Plone 4 and Plone 5.
+  [lgraf]
+
 - Don't hard depend on ftw.inflator.
   This makes it possible to use ftw.blueprint sections in Plone5 even when ftw.inflator is not upgraded yet.
   [Guido A.J. Stevens]
-  
+
 - Update imports to work with both Plone 4 and Plone 5
   [Guido A.J. Stevens]
 
