@@ -1,3 +1,4 @@
+from copy import deepcopy
 from ftw.blueprints.sections.multilingual import LinguaPloneItemLinker
 from ftw.blueprints.testing import BLUEPRINT_FUNCTIONAL_TESTING
 from ftw.blueprints.tests.base import BlueprintTestCase
@@ -7,9 +8,17 @@ from ftw.builder import create
 from plone.app.testing import applyProfile
 from plone.app.testing.helpers import setRoles
 from plone.app.testing.interfaces import TEST_USER_ID
-from plone.multilingual.interfaces import ITranslationManager
-from plone.multilingual.interfaces import ILanguage
-from copy import deepcopy
+from Products.CMFPlone.utils import getFSVersionTuple
+
+
+if getFSVersionTuple() >= (5,):
+    # Plone 5
+    from plone.app.multilingual.interfaces import ITranslationManager
+    from Products.CMFPlone.interfaces import ILanguage
+else:
+    # Plone <= 4
+    from plone.multilingual.interfaces import ITranslationManager
+    from plone.multilingual.interfaces import ILanguage
 
 
 ITEMS = [{
