@@ -89,7 +89,7 @@
         />
 
     <utility
-        zcml:condition="installed plone.multilingual"
+        zcml:condition="installed plone.app.multilingual"
         component=".multilingual.LinguaPloneItemLinker"
         name="ftw.blueprints.multilingual.linguaploneitemlinker"
         />
