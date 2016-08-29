@@ -29,7 +29,7 @@ Installation
 Compatibility
 -------------
 
-Runs with `Plone <http://www.plone.org/>`_ `4.2` or `4.3`.
+Runs with `Plone <http://www.plone.org/>`_ ``4.2``, ``4.3`` or ``5.0``.
 
 Plone 4.2
 
@@ -40,6 +40,11 @@ Plone 4.3
 
 .. image:: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.3.x.cfg/badge/icon
    :target: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-4.3.x.cfg
+
+Plone 5.0
+
+.. image:: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-5.0.x.cfg/badge/icon
+   :target: https://jenkins.4teamwork.ch/job/ftw.blueprints-master-test-plone-5.0.x.cfg
 
 
 Blueprints provided by this package
