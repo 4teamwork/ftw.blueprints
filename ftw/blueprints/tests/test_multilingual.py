@@ -52,8 +52,8 @@ class TestMultilingual(BlueprintTestCase):
         self._setup_content()
 
     def _setup_content(self):
-        self.folder_de = create(Builder('folder').titled('de'))
-        self.folder_en = create(Builder('folder').titled('en'))
+        self.folder_de = create(Builder('folder').titled(u'de'))
+        self.folder_en = create(Builder('folder').titled(u'en'))
 
         self.file_de = create(Builder('file')
                               .within(self.folder_de)
@@ -71,7 +71,7 @@ class TestMultilingual(BlueprintTestCase):
         return list(source)
 
     def test_duplicate_translations_are_discarded_when_linking(self):
-        folder_uhoh = create(Builder('folder').titled('uhoh'))
+        folder_uhoh = create(Builder('folder').titled(u'uhoh'))
 
         self.items = self.items[:2]
         self.items.append({

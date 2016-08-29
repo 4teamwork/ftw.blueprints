@@ -19,10 +19,10 @@ class TestPositionInParentUpdater(BlueprintTestCase):
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
 
     def test_updating_object_position_in_folder(self):
-        folder = create(Builder('folder').titled('folder'))
-        create(Builder('folder').titled('three').within(folder))
-        create(Builder('folder').titled('two').within(folder))
-        create(Builder('folder').titled('one').within(folder))
+        folder = create(Builder('folder').titled(u'folder'))
+        create(Builder('folder').titled(u'three').within(folder))
+        create(Builder('folder').titled(u'two').within(folder))
+        create(Builder('folder').titled(u'one').within(folder))
 
         self.assert_obj_positions(folder, ['three', 'two', 'one'])
         self.assert_catalog_positions(folder, ['three', 'two', 'one'])
@@ -42,9 +42,9 @@ class TestPositionInParentUpdater(BlueprintTestCase):
         self.assert_catalog_positions(folder, ['one', 'two', 'three'])
 
     def test_updating_object_position_in_plone_site(self):
-        create(Builder('folder').titled('three'))
-        create(Builder('folder').titled('two'))
-        create(Builder('folder').titled('one'))
+        create(Builder('folder').titled(u'three'))
+        create(Builder('folder').titled(u'two'))
+        create(Builder('folder').titled(u'one'))
 
         self.assert_obj_positions(self.portal, ['three', 'two', 'one'])
         self.assert_catalog_positions(self.portal, ['three', 'two', 'one'])
