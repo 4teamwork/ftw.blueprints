@@ -1,3 +1,5 @@
+from Acquisition import aq_parent
+from copy import deepcopy
 from ftw.blueprints.sections.multilingual import LinguaPloneItemLinker
 from ftw.blueprints.testing import BLUEPRINT_FUNCTIONAL_TESTING
 from ftw.blueprints.tests.base import BlueprintTestCase
@@ -7,9 +9,17 @@ from ftw.builder import create
 from plone.app.testing import applyProfile
 from plone.app.testing.helpers import setRoles
 from plone.app.testing.interfaces import TEST_USER_ID
-from plone.multilingual.interfaces import ITranslationManager
-from plone.multilingual.interfaces import ILanguage
-from copy import deepcopy
+from Products.CMFPlone.utils import getFSVersionTuple
+
+
+if getFSVersionTuple() >= (5,):
+    # Plone 5
+    from plone.app.multilingual.interfaces import ITranslationManager
+    from Products.CMFPlone.interfaces import ILanguage
+else:
+    # Plone <= 4
+    from plone.multilingual.interfaces import ITranslationManager
+    from plone.multilingual.interfaces import ILanguage
 
 
 ITEMS = [{
@@ -52,8 +62,8 @@ class TestMultilingual(BlueprintTestCase):
         self._setup_content()
 
     def _setup_content(self):
-        self.folder_de = create(Builder('folder').titled('de'))
-        self.folder_en = create(Builder('folder').titled('en'))
+        self.folder_de = create(Builder('folder').titled(u'de'))
+        self.folder_en = create(Builder('folder').titled(u'en'))
 
         self.file_de = create(Builder('file')
                               .within(self.folder_de)
@@ -61,6 +71,16 @@ class TestMultilingual(BlueprintTestCase):
         self.file_en = create(Builder('file')
                               .within(self.folder_en)
                               .with_dummy_content())
+
+        # Hack to ensure constistent IDs on Plone 5 vs. Plone 4
+        self._ensure_has_id(self.file_de, 'file')
+        self._ensure_has_id(self.file_en, 'file')
+
+    def _ensure_has_id(self, obj, new_id):
+        old_id = obj.getId()
+        if old_id != new_id:
+            container = aq_parent(obj)
+            container.manage_renameObject(old_id, 'file')
 
     def _run_transmogrifier(self):
         transmogrifier = TestTransmogrifier()
@@ -71,7 +91,7 @@ class TestMultilingual(BlueprintTestCase):
         return list(source)
 
     def test_duplicate_translations_are_discarded_when_linking(self):
-        folder_uhoh = create(Builder('folder').titled('uhoh'))
+        folder_uhoh = create(Builder('folder').titled(u'uhoh'))
 
         self.items = self.items[:2]
         self.items.append({
