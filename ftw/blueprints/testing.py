@@ -1,17 +1,24 @@
-from Testing.ZopeTestCase.utils import setupCoreSessions
 from ftw.builder.testing import BUILDER_LAYER
 from ftw.builder.testing import functional_session_factory
 from ftw.builder.testing import set_builder_session_factory
+from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
+from Products.CMFPlone.utils import getFSVersionTuple
+from Testing.ZopeTestCase.utils import setupCoreSessions
 from zope.configuration import xmlconfig
 
 
 class BlueprintLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_FIXTURE, BUILDER_LAYER)
+
+    def setUpPloneSite(self, portal):
+        if getFSVersionTuple() > (5, ):
+            # Needed to have DX 'folder' builders on Plone 5
+            applyProfile(portal, 'plone.app.contenttypes:default')
 
     def setUpZope(self, app, configurationContext):
         import ftw.blueprints
