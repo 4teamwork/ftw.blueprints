@@ -25,6 +25,11 @@ Installation
 
 - Open view @@jsonmigrator and chose your configuration file
 
+Note: Some of the Archetypes and Dexterity example configs also reference
+sections from `ftw.inflator <https://github.com/4teamwork/ftw.inflator/>`_.
+If you base your config on one of these, you'll also need to install
+``ftw.inflator``.
+
 
 Compatibility
 -------------
