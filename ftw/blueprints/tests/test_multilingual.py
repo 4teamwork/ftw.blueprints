@@ -1,3 +1,4 @@
+from Acquisition import aq_parent
 from copy import deepcopy
 from ftw.blueprints.sections.multilingual import LinguaPloneItemLinker
 from ftw.blueprints.testing import BLUEPRINT_FUNCTIONAL_TESTING
@@ -70,6 +71,16 @@ class TestMultilingual(BlueprintTestCase):
         self.file_en = create(Builder('file')
                               .within(self.folder_en)
                               .with_dummy_content())
+
+        # Hack to ensure constistent IDs on Plone 5 vs. Plone 4
+        self._ensure_has_id(self.file_de, 'file')
+        self._ensure_has_id(self.file_en, 'file')
+
+    def _ensure_has_id(self, obj, new_id):
+        old_id = obj.getId()
+        if old_id != new_id:
+            container = aq_parent(obj)
+            container.manage_renameObject(old_id, 'file')
 
     def _run_transmogrifier(self):
         transmogrifier = TestTransmogrifier()
