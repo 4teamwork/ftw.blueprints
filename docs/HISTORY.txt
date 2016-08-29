@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.1 (unreleased)
+1.1.0 (2016-08-29)
 ------------------
 
 - Fix Plone 5 tests:
