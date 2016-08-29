@@ -5,6 +5,15 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+- Fix Plone 5 tests:
+
+  - Make sure to set unicode titles.
+  - Install p.a.contenttypes:default profile during Plone 5 tests
+  - Use conditional imports for Plone 4 / 5 compatibility in tests.
+  - Ensure we have consistent IDs on Plone 4 and 5.
+
+  [lgraf]
+
 - Make ILanguage import conditional so it works for both Plone 4 and Plone 5.
   [lgraf]
 
