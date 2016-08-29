@@ -45,7 +45,6 @@ setup(name='ftw.blueprints',
           'collective.blueprint.jsonmigrator',
           'collective.transmogrifier >= 1.5',
           'transmogrify.dexterity',
-          # 'ftw.inflator',
           # -*- Extra requirements: -*-
       ],
 
