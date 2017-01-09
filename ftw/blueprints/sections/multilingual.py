@@ -78,6 +78,8 @@ class LinguaPloneItemLinker(object):
                 continue
 
             canonicalpath = item[translationkey]
+            if isinstance(canonicalpath, unicode):
+                canonicalpath = canonicalpath.encode('ascii')
             language = item['language']
             if ITranslatable.providedBy(obj):
                 ILanguage(obj).set_language(language)
